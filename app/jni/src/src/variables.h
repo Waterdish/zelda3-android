@@ -275,8 +275,8 @@
 #define link_picking_throw_state (*(uint8*)(g_ram+0x309))
 #define some_animation_timer_steps (*(uint8*)(g_ram+0x30A))
 #define some_animation_timer (*(uint8*)(g_ram+0x30B))
-#define link_var30d (*(uint8*)(g_ram+0x30D))
-#define link_var30e (*(uint8*)(g_ram+0x30E))
+#define link_var30d (*(uint8*)(g_ram+0x30D)) // animation step counter
+#define link_var30e (*(uint8*)(g_ram+0x30E)) // is always 0
 #define dung_floor_y_vel (*(uint16*)(g_ram+0x310))
 #define dung_floor_x_vel (*(uint16*)(g_ram+0x312))
 #define flag_is_sprite_to_pick_up (*(uint8*)(g_ram+0x314))
@@ -298,7 +298,7 @@
 #define link_maybe_swim_faster (*(uint8*)(g_ram+0x32A))
 #define swimcoll_var5 ((uint16*)(g_ram+0x32B))
 #define swimcoll_var1 ((uint16*)(g_ram+0x32F))
-#define byte_7E0333 (*(uint8*)(g_ram+0x333))
+#define byte_7E0333 (*(uint8*)(g_ram+0x333)) // torch
 #define swimcoll_var9 ((uint16*)(g_ram+0x334))
 #define swimcoll_var11 ((uint16*)(g_ram+0x338))
 #define swimcoll_var7 ((uint16*)(g_ram+0x33C))

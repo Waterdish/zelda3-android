@@ -8,13 +8,12 @@ Running the app once will create the directory. <br>
 
 Android 13 users: check the releases tab for the Android 13 version of the app. 
 
-NOTE: Controller only. No touch controls yet. <br>
 
 How to Change Settings: <br>
 Android/data/com.dishii.zelda3/files contains zelda3.ini. Use a text editor to change options. <br>
 
 Default Settings:
-L3 Turbo button <br>
+NOTE: by default, this file is set for screen touch control. For controllers, uncomment the appropriate line. <br>
 18:9 Aspect Ratio <br>
 Fullscreen(no android on-screen controls) <br>
 

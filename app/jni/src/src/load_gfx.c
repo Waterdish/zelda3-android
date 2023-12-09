@@ -536,11 +536,11 @@ void LoadItemGFX_Auxiliary() {  // 80d3c6
 
 void LoadFollowerGraphics() {  // 80d423
   uint8 yv = 0x64;
-  if (follower_indicator != 1) {
+  if (follower_indicator != follower_indicator_Zelda) {
     yv = 0x66;
-    if (follower_indicator >= 9) {
+    if (follower_indicator >= follower_indicator_LockSmith) { //LockSmith or Kiki or 11 (or PurpleChess or BigBomb or 0xe)
       yv = 0x59;
-      if (follower_indicator >= 12)
+      if (follower_indicator >= follower_indicator_PurpleChess) //PurpleChess or BigBomb or 0xe
         yv = 0x58;
     }
   }

@@ -2,6 +2,26 @@
 #include "types.h"
 #include "variables.h"
 
+//Ycar:
+static const uint8 receiveitem_index_sword = 0; //uncle's sword
+static const uint8 receiveitem_index_master_sword = 1;
+static const uint8 receiveitem_index_tempered_sword = 2;
+static const uint8 receiveitem_index_bag_of_powder = 0xd;
+static const uint8 receiveitem_index_shovel = 0x13;
+static const uint8 receiveitem_index_flute = 0x14;
+static const uint8 receiveitem_index_bottle = 0x16;
+static const uint8 receiveitem_index_cane_of_byrna = 0x18;
+static const uint8 receiveitem_index_mirror = 0x1a;
+static const uint8 receiveitem_index_book_of_mudora = 0x1d;
+static const uint8 receiveitem_index_bug_net = 0x21;
+static const uint8 receiveitem_index_heart_container = 0x26;
+static const uint8 receiveitem_index_mushroom = 0x29;
+static const uint8 receiveitem_index_red_cauldron = 0x2e;
+static const uint8 receiveitem_index_green_cauldron = 0x2f;
+static const uint8 receiveitem_index_blue_cauldron = 0x30;
+static const uint8 receiveitem_index_big_key = 0x32;
+static const uint8 receiveitem_index_heart_something = 0x3e;
+static const uint8 receiveitem_index_boots = 0x4b;
 
 typedef struct PrepOamCoordsRet {
   uint16 x, y;
@@ -44,7 +64,7 @@ typedef struct DrawMultipleData {
 
 enum {
   kCheckDamageFromPlayer_Carry = 1,
-  kCheckDamageFromPlayer_Ne = 2,
+  kCheckDamageFromPlayer_Net = 2,
 };
 
 static inline void SetOamHelper0(OamEnt *oam, uint16 x, uint16 y, uint8 charnum, uint8 flags, uint8 big) {
@@ -174,11 +194,16 @@ void Sprite_MoveXY(int k);
 void Sprite_MoveX(int k);
 void Sprite_MoveY(int k);
 void Sprite_MoveZ(int k);
+ProjectSpeedRet Sprite_ProjectSpeedTowardsTarget(int k, int j, uint8 vel);
 ProjectSpeedRet Sprite_ProjectSpeedTowardsLink(int k, uint8 vel);
+void Sprite_ApplySpeedTowardsTarget(int k, int j, uint8 vel);
 void Sprite_ApplySpeedTowardsLink(int k, uint8 vel);
 ProjectSpeedRet Sprite_ProjectSpeedTowardsLocation(int k, uint16 x, uint16 y, uint8 vel);
+uint8 Sprite_DirectionToFaceTarget(int k, int j, PointU8 *coords_out);
 uint8 Sprite_DirectionToFaceLink(int k, PointU8 *coords_out);
+PairU8 Sprite_IsRightOfTarget(int k, int j);
 PairU8 Sprite_IsRightOfLink(int k);
+PairU8 Sprite_IsBelowTarget(int k, int j);
 PairU8 Sprite_IsBelowLink(int k);
 PairU8 Sprite_IsRightOfLocation(int k, uint16 x);
 PairU8 Sprite_IsBelowLocation(int k, uint16 y);

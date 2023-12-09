@@ -80,12 +80,12 @@ static const uint8 kSprite_SimplifiedTileAttr[256] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 };
-static const int8 kSprite_Func5_Tab3[256] = {
+static const int8 kSprite_Func5_Tab3[256] = { // Sprite_CheckTileProperty returns false when ==0
   0, 1, 2, 3, 2, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1,
-  1, 1, 1, 0, 0, 0, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1,
+  1, 1, 1, 0, 0, 0, 1, 2,-1,-1,-1,-1,-1,-1,-1,-1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
-  0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, -1, -1, -1, -1,
+  0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0,-1,-1,-1,-1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 1, 1, 1, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -136,17 +136,17 @@ static const uint8 kSpriteInit_Flags2[243] = {
   0x83, 0x83, 0x83,
 };
 static const uint8 kSpriteInit_Health[243] = {
-   12,   6, 255,   3,  3,   3,   3,   3,   2,  12,  4, 255,   0,   3,  12,   2,
+   12,   6, 255,   3,  3,   3,   3,   3,   2,  12,  4, 255,   0,   3,  12,   2, //0*
     0,  20,   4,   4,  0, 255,   0,   2,   3,   8,  0,   0,   0,   0,   0,   0,
     8,   3,   8,   2,  2,   0,   3, 255,   0,   3,  3,   3,   3,   3,   3,   3,
     3,   0,   3,   0,  3,   3,   3,   0,   3,   0,  0,   0,   0,   3,   2, 255,
     2,   6,   4,   8,  6,   8,   6,   4,   8,   8,  8,   4,   4,   2,   2,   2,
-  255,   8, 255,  48, 16,   8,   8, 255,   2,   0,  0, 255, 255, 255, 255, 255,
+  255,   8, 255,  48, 16,   8,   8, 255,   2,   0,  0, 255, 255, 255, 255, 255, //5*
   255, 255, 255, 255,  4,   4, 255, 255, 255, 255, 16,   3,   0,   2,   4,   1,
   255,   4, 255,   0,  0,   0,   0, 255,   0,   0, 96, 255,  24, 255, 255, 255,
     3,   4, 255,  16,  8,   8,   0, 255,  32,  32, 32,  32,  32,   8,   8,   4,
     8,  64,  48, 255,  2, 255, 255, 255, 255,  16,  4,   2,   4,   4,   8,   8,
-    8,  16,  64,  64,  8,   4,   8,   4,   4,   8, 12,  16,   0,   0,   0,   0,
+    8,  16,  64,  64,  8,   4,   8,   4,   4,   8, 12,  16,   0,   0,   0,   0, //A*
     0,   0,   0,   0,  0,   0,   0,   0,   0,   0,  0,   0,   0, 128,  48, 255,
   255, 255, 255,   8,  0,   0,   0,  32,   0,   8,  5,  40,  40,  40,  90,  16,
    24,  64,   0,   4,  0,   0, 255, 255,   0,   0,  0,   0,   0,   0,   0,   0,
@@ -154,40 +154,40 @@ static const uint8 kSpriteInit_Health[243] = {
     0,   0,   0,
 };
 const uint8 kSpriteInit_BumpDamage[243] = {
-  0x83, 0x83, 0x81,    2,    2,    2,    2,    2,    1, 0x13,    1,    1,    1,    1,    8,    1,
-     1,    8,    5,    3, 0x40,    4,    0,    2,    3, 0x85,    0,    1,    0, 0x40,    0,    0,
-     6,    0,    5,    3,    1,    0,    0,    3,    0,    0,    0,    0,    0,    0,    0,    0,
-     0,    0,    0,    0,    0,    0,    0, 0x40,    0,    0,    0,    0,    0,    0,    2,    2,
-     0,    1,    1,    3,    1,    3,    1,    1,    3,    3,    3,    1,    3,    1,    1,    1,
-     1,    1,    1, 0x11, 0x14,    1,    1,    2,    5,    0,    0,    4,    4,    8,    8,    8,
-     8,    4,    0,    4,    3,    2,    2,    2,    2,    2,    3,    1,    0,    0,    1, 0x80,
-     5,    1,    0,    0,    0, 0x40,    0,    4,    0,    0, 0x14,    4,    6,    4,    4,    4,
-     4,    3,    4,    4,    4,    1,    4,    4, 0x15,    5,    4,    5, 0x15, 0x15,    3,    5,
-     0,    5, 0x15,    5,    5,    6,    6,    6,    6,    5,    3,    6,    5,    5,    3,    3,
-     3,    6, 0x17, 0x15, 0x15,    5,    5,    1, 0x85, 0x83,    5,    4,    0,    0,    0,    0,
-     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, 0x17, 0x17,    5,
-     5,    5,    4,    3,    2, 0x10,    0,    6,    0,    5,    7, 0x17, 0x17, 0x17, 0x15,    7,
-     6, 0x10,    0,    3,    3,    0, 0x19, 0x19,    0,    0,    0,    0,    0,    0,    0,    0,
-     0,    0,    0, 0x10,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-     0,    0,    0,
+  0x83, 0x83, 0x81,    2,    2,    2,    2,    2,    1, 0x13,    1,    1,    1,    1,    8,    1, //0*
+     1,    8,    5,    3, 0x40,    4,    0,    2,    3, 0x85,    0,    1,    0, 0x40,    0,    0, //1*
+     6,    0,    5,    3,    1,    0,    0,    3,    0,    0,    0,    0,    0,    0,    0,    0, //2*
+     0,    0,    0,    0,    0,    0,    0, 0x40,    0,    0,    0,    0,    0,    0,    2,    2, //3*
+     0,    1,    1,    3,    1,    3,    1,    1,    3,    3,    3,    1,    3,    1,    1,    1, //4*
+     1,    1,    1, 0x11, 0x14,    1,    1,    2,    5,    0,    0,    4,    4,    8,    8,    8, //5*
+     8,    4,    0,    4,    3,    2,    2,    2,    2,    2,    3,    1,    0,    0,    1, 0x80, //6*
+     5,    1,    0,    0,    0, 0x40,    0,    4,    0,    0, 0x14,    4,    6,    4,    4,    4, //7*
+     4,    3,    4,    4,    4,    1,    4,    4, 0x15,    5,    4,    5, 0x15, 0x15,    3,    5, //8*
+     0,    5, 0x15,    5,    5,    6,    6,    6,    6,    5,    3,    6,    5,    5,    3,    3, //9*
+     3,    6, 0x17, 0x15, 0x15,    5,    5,    1, 0x85, 0x83,    5,    4,    0,    0,    0,    0, //A*
+     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, 0x17, 0x17,    5, //B*
+     5,    5,    4,    3,    2, 0x10,    0,    6,    0,    5,    7, 0x17, 0x17, 0x17, 0x15,    7, //C*
+     6, 0x10,    0,    3,    3,    0, 0x19, 0x19,    0,    0,    0,    0,    0,    0,    0,    0, //D*
+     0,    0,    0, 0x10,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0, //E*
+     0,    0,    0,                                                                               //F*
 };
 static const uint8 kSpriteInit_Flags3[243] = {
-  0x19,  0xb, 0x1b, 0x4b, 0x41, 0x41, 0x41, 0x4d, 0x1d,    1, 0x1d, 0x19, 0x8d, 0x1b,    9, 0x9d,
-  0x3d,    1,    9, 0x11, 0x40,    1, 0x4d, 0x19,    7, 0x1d, 0x59, 0x80, 0x4d, 0x40,    1, 0x49,
-  0x1b, 0x41,    3, 0x13, 0x15, 0x41, 0x18, 0x1b, 0x41, 0x47,  0xf, 0x49, 0x4b, 0x4d, 0x41, 0x47,
-  0x49, 0x4d, 0x49, 0x40, 0x4d, 0x47, 0x49, 0x41, 0x74, 0x47, 0x5b, 0x58, 0x51, 0x49, 0x1d, 0x5d,
-     3, 0x19, 0x1b, 0x17, 0x19, 0x17, 0x19, 0x1b, 0x17, 0x17, 0x17, 0x1b,  0xd,    9, 0x19, 0x19,
-  0x49, 0x5d, 0x5b, 0x49,  0xd,    3, 0x13, 0x41, 0x1b, 0x5b, 0x5d, 0x43, 0x43, 0x4d, 0x4d, 0x4d,
-  0x4d, 0x4d, 0x49,    1,    0, 0x41, 0x4d, 0x4d, 0x4d, 0x4d, 0x1d,    9, 0xc4,  0xd,  0xd,    9,
-     3,    3, 0x4b, 0x47, 0x47, 0x49, 0x49, 0x41, 0x47, 0x36, 0x8b, 0x49, 0x1d, 0x49, 0x43, 0x43,
-  0x43,  0xb, 0x41,  0xd,    7,  0xb, 0x1d, 0x43,  0xd, 0x43,  0xd, 0x1d, 0x4d, 0x4d, 0x1b, 0x1b,
-   0xa,  0xb,    0,    5,  0xd,    1,    1,    1,    1,  0xb,    5,    1,    1,    1,    7, 0x17,
-  0x19,  0xd,  0xd, 0x80, 0x4d, 0x19, 0x17, 0x19,  0xb,    9,  0xd, 0x4a, 0x12, 0x49, 0xc3, 0xc3,
-  0xc3, 0xc3, 0x76, 0x40, 0x59, 0x41, 0x58, 0x4f, 0x73, 0x5b, 0x44, 0x41, 0x51,  0xa,  0xb,  0xb,
-  0x4b,    0, 0x40, 0x5b,  0xd,    0,    0,  0xd, 0x4b,  0xb, 0x59, 0x41,  0xb,  0xd,    1,  0xd,
-   0xd,    0, 0x50, 0x4c, 0x44, 0x51,    1,    1, 0xf2, 0xf8, 0xf4, 0xf2, 0xd4, 0xd4, 0xd4, 0xf8,
-  0xf8, 0xf4, 0xf4, 0xd8, 0xf8, 0xd8, 0xdf, 0xc8, 0x69, 0xc1, 0xd2, 0xd2, 0xdc, 0xc7, 0xc1, 0xc7,
-  0xc7, 0xc7, 0xc1,
+  0x19,  0xb, 0x1b, 0x4b, 0x41, 0x41, 0x41, 0x4d, 0x1d,    1, 0x1d, 0x19, 0x8d, 0x1b,    9, 0x9d, //0*
+  0x3d,    1,    9, 0x11, 0x40,    1, 0x4d, 0x19,    7, 0x1d, 0x59, 0x80, 0x4d, 0x40,    1, 0x49, //1*
+  0x1b, 0x41,    3, 0x13, 0x15, 0x41, 0x18, 0x1b, 0x41, 0x47,  0xf, 0x49, 0x4b, 0x4d, 0x41, 0x47, //2*
+  0x49, 0x4d, 0x49, 0x40, 0x4d, 0x47, 0x49, 0x41, 0x74, 0x47, 0x5b, 0x58, 0x51, 0x49, 0x1d, 0x5d, //3*
+     3, 0x19, 0x1b, 0x17, 0x19, 0x17, 0x19, 0x1b, 0x17, 0x17, 0x17, 0x1b,  0xd,    9, 0x19, 0x19, //4*
+  0x49, 0x5d, 0x5b, 0x49,  0xd,    3, 0x13, 0x41, 0x1b, 0x5b, 0x5d, 0x43, 0x43, 0x4d, 0x4d, 0x4d, //5*
+  0x4d, 0x4d, 0x49,    1,    0, 0x41, 0x4d, 0x4d, 0x4d, 0x4d, 0x1d,    9, 0xc4,  0xd,  0xd,    9, //6*
+     3,    3, 0x4b, 0x47, 0x47, 0x49, 0x49, 0x41, 0x47, 0x36, 0x8b, 0x49, 0x1d, 0x49, 0x43, 0x43, //7*
+  0x43,  0xb, 0x41,  0xd,    7,  0xb, 0x1d, 0x43,  0xd, 0x43,  0xd, 0x1d, 0x4d, 0x4d, 0x1b, 0x1b, //8*
+   0xa,  0xb,    0,    5,  0xd,    1,    1,    1,    1,  0xb,    5,    1,    1,    1,    7, 0x17, //9*
+  0x19,  0xd,  0xd, 0x80, 0x4d, 0x19, 0x17, 0x19,  0xb,    9,  0xd, 0x4a, 0x12, 0x49, 0xc3, 0xc3, //A*
+  0xc3, 0xc3, 0x76, 0x40, 0x59, 0x41, 0x58, 0x4f, 0x73, 0x5b, 0x44, 0x41, 0x51,  0xa,  0xb,  0xb, //B*
+  0x4b,    0, 0x40, 0x5b,  0xd,    0,    0,  0xd, 0x4b,  0xb, 0x59, 0x41,  0xb,  0xd,    1,  0xd, //C*
+   0xd,    0, 0x50, 0x4c, 0x44, 0x51,    1,    1, 0xf2, 0xf8, 0xf4, 0xf2, 0xd4, 0xd4, 0xd4, 0xf8, //D*
+  0xf8, 0xf4, 0xf4, 0xd8, 0xf8, 0xd8, 0xdf, 0xc8, 0x69, 0xc1, 0xd2, 0xd2, 0xdc, 0xc7, 0xc1, 0xc7, //E*
+  0xc7, 0xc7, 0xc1,                                                                               //F*
 };
 static const uint8 kSpriteInit_Flags4[243] = {
      0,    0,    0, 0x43, 0x43, 0x43, 0x43, 0x43,    0,    0,    0,    0, 0x1c,    0,    0,    2,
@@ -1403,7 +1403,7 @@ void Sprite_HandleAbsorptionByPlayer(int k) {  // 86d13c
     goto after_getkey;
   case 13:
     item_receipt_method = 0;
-    Link_ReceiveItem(0x32, 0);
+    Link_ReceiveItem(receiveitem_index_big_key, 0);
   after_getkey:
     sprite_N[k] = sprite_subtype[k];
     dung_savegame_state_bits |= kAbsorbBigKey[sprite_die_action[k]] << 8;
@@ -2081,6 +2081,41 @@ void Sprite_MoveZ(int k) {  // 86e96c
   sprite_z[k] = z >> 8;
 }
 
+ProjectSpeedRet Sprite_ProjectSpeedTowardsTarget(int k, int j, uint8 vel) {  // 86e991
+  if (vel == 0) {
+    ProjectSpeedRet rv = { 0, 0, 0, 0 };
+    return rv;
+  }
+  PairU8 below = Sprite_IsBelowTarget(k, j);
+  uint8 r12 = sign8(below.b) ? -below.b : below.b;
+
+  PairU8 right = Sprite_IsRightOfTarget(k, j);
+  uint8 r13 = sign8(right.b) ? -right.b : right.b;
+  uint8 t;
+  bool swapped = false;
+  if (r13 < r12) {
+    swapped = true;
+    t = r12, r12 = r13, r13 = t;
+  }
+  uint8 xvel = vel, yvel = 0;
+  t = 0;
+  do {
+    t += r12;
+    if (t >= r13)
+      t -= r13, yvel++;
+  } while (--vel);
+  if (swapped)
+    t = xvel, xvel = yvel, yvel = t;
+  ProjectSpeedRet rv = {
+    (uint8)(right.a ? -xvel : xvel),
+    (uint8)(below.a ? -yvel : yvel),
+    right.b,
+    below.b
+
+  };
+  return rv;
+}
+
 ProjectSpeedRet Sprite_ProjectSpeedTowardsLink(int k, uint8 vel) {  // 86e991
   if (vel == 0) {
     ProjectSpeedRet rv = { 0, 0, 0, 0 };
@@ -2114,6 +2149,13 @@ ProjectSpeedRet Sprite_ProjectSpeedTowardsLink(int k, uint8 vel) {  // 86e991
 
   };
   return rv;
+}
+
+
+void Sprite_ApplySpeedTowardsTarget(int k, int j, uint8 vel) {  // 86ea04
+  ProjectSpeedRet pt = Sprite_ProjectSpeedTowardsTarget(k, j, vel);
+  sprite_x_vel[k] = pt.x;
+  sprite_y_vel[k] = pt.y;
 }
 
 void Sprite_ApplySpeedTowardsLink(int k, uint8 vel) {  // 86ea04
@@ -2156,6 +2198,18 @@ ProjectSpeedRet Sprite_ProjectSpeedTowardsLocation(int k, uint16 x, uint16 y, ui
   return rv;
 }
 
+
+uint8 Sprite_DirectionToFaceTarget(int k, int j, PointU8 *coords_out) {  // 86eaa4
+  PairU8 below = Sprite_IsBelowTarget(k,j);
+  PairU8 right = Sprite_IsRightOfTarget(k,j);
+  uint8 ym = sign8(below.b) ? -below.b : below.b;
+  tmp_counter = ym;
+  uint8 xm = sign8(right.b) ? -right.b : right.b;
+  if (coords_out)
+    coords_out->x = right.b, coords_out->y = below.b;
+  return (xm >= ym) ? right.a : below.a + 2;
+}
+
 uint8 Sprite_DirectionToFaceLink(int k, PointU8 *coords_out) {  // 86eaa4
   PairU8 below = Sprite_IsBelowLink(k);
   PairU8 right = Sprite_IsRightOfLink(k);
@@ -2167,9 +2221,26 @@ uint8 Sprite_DirectionToFaceLink(int k, PointU8 *coords_out) {  // 86eaa4
   return (xm >= ym) ? right.a : below.a + 2;
 }
 
+PairU8 Sprite_IsRightOfTarget(int k, int j) {  // 86ead1
+  uint16 x = Sprite_GetX(j) - Sprite_GetX(k);
+  PairU8 rv = { (uint8)(sign16(x) ? 1 : 0), (uint8)x };
+  return rv;
+}
+
 PairU8 Sprite_IsRightOfLink(int k) {  // 86ead1
   uint16 x = link_x_coord - Sprite_GetX(k);
   PairU8 rv = { (uint8)(sign16(x) ? 1 : 0), (uint8)x };
+  return rv;
+}
+
+
+PairU8 Sprite_IsBelowTarget(int k, int j) {  // 86eae8
+  int t = sprite_y_lo[j] + 8;
+  int u = (t & 0xff) + sprite_z[k];
+  int v = (u & 0xff) - sprite_y_lo[k];
+  int w = sprite_y_hi[j] - sprite_y_hi[k] - (v < 0);
+  uint8 y = (w & 0xff) + (t >> 8) + (u >> 8);
+  PairU8 rv = { (uint8)(sign8(y) ? 1 : 0), (uint8)v };
   return rv;
 }
 
@@ -2283,7 +2354,7 @@ void Sprite_CalculateSwordDamage(int k) {  // 86ed3f
   if (!link_is_running)
     a |= sign8(button_b_frames) ? 4 : sign8(button_b_frames - 9) ? 0 : 8;
   damage_type_determiner = kSprite_Func14_Damage[a];
-  if (link_item_in_hand & 10)
+  if (link_item_in_hand & 10) //if 0xa in hand
     damage_type_determiner = 3;
   link_sword_delay_timer = 4;
   set_when_damaging_enemies = 16;
@@ -2648,17 +2719,17 @@ uint8 Sprite_CheckDamageFromLink(int k) {  // 86f2b4
 
   set_when_damaging_enemies = 0;
   if (link_position_mode & 0x10)
-    return kCheckDamageFromPlayer_Carry | kCheckDamageFromPlayer_Ne;
+    return kCheckDamageFromPlayer_Carry | kCheckDamageFromPlayer_Net;
 
-  if (link_item_in_hand & 10) {
+  if (link_item_in_hand & 10) { //if 0xa in hand 
     if (sprite_type[k] >= 0xd6)
       return 0;
-    if (sprite_state[k] == 11 && sprite_unk5[k] != 0) {
+    if (sprite_state[k] == 11 && sprite_unk5[k] != 0) { //seems related to mini-Moldorm recoil...(why?)
       sprite_state[k] = 2;
       sprite_delay_main[k] = 32;
       sprite_flags2[k] = (sprite_flags2[k] & 0xe0) | 3;
       SpriteSfx_QueueSfx2WithPan(k, 0x1f);
-      return kCheckDamageFromPlayer_Carry | kCheckDamageFromPlayer_Ne;
+      return kCheckDamageFromPlayer_Carry | kCheckDamageFromPlayer_Net;
     }
   }
   uint8 type = sprite_type[k];
@@ -2746,7 +2817,7 @@ void Player_SetupActionHitBox(SpriteHitBox *hb) {  // 86f5e0
     hb->r2 = hb->r3 = 16;
   } else {
     int t = 0;
-    if (!(link_item_in_hand & 10) && !(link_position_mode & 0x10)) {
+    if (!(link_item_in_hand & 10) && !(link_position_mode & 0x10)) { //if 0xa in hand
       if (sign8(button_b_frames)) {
         int x = link_x_coord - 14;
         int y = link_y_coord - 10;
@@ -3700,7 +3771,7 @@ void Sprite_ResetAll_noDisable() {  // 89c452
   byte_7E0FC6 = 0;
   sprite_limit_instance = 0;
   sort_sprites_setting = 0;
-  if (follower_indicator != 13)
+  if (follower_indicator != follower_indicator_BigBomb)
     super_bomb_indicator_unk2 = 0xfe;
   memset(sprite_where_in_room, 0, 0x1000);
   memset(overworld_sprite_was_loaded, 0, 0x200);
