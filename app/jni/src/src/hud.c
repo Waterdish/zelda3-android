@@ -4,6 +4,8 @@
 #include "variables.h"
 #include "messaging.h"
 
+#include "player.h" //Ycar
+
 enum {
   kNewStyleInventory = 0,
   kHudItemCount = kNewStyleInventory ? 24 : 20,
@@ -711,7 +713,7 @@ void Hud_CloseMenu() {  // 8ddfba
   main_module_index = saved_module_for_menu;
   if (submodule_index)
     Hud_RestoreTorchBackground();
-  if (current_item_y != 5 && current_item_y != 6) {
+  if (current_item_y != ciaLI_FireRod && current_item_y != ciaLI_IceRod) {
     eq_debug_variable = 2;
     link_debug_value_1 = 0;
   } else {
@@ -915,8 +917,12 @@ static const ItemBoxGfx *Hud_GetIconForItem(int i) {
   if (i <= 0)
     return kHudItemEmpty;
 
-  if (i >= kHudItem_Bottle1)
+  if (i >= kHudItem_Bottle1){
+    if (enhanced_features0 & kFeatures0_Pokemode){
+        return &kHudItemFlute[link_item_flute >= 1]; //Pokemode (play it safe)
+    }
     return &kHudItemBottles[link_bottle_info[i - kHudItem_Bottle1]];
+  }
   if (i == kHudItem_Shovel && kNewStyleInventory)
     return &kHudItemFlute[link_item_flute >= 1];
 

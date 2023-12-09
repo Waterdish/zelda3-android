@@ -1272,7 +1272,7 @@ void Ancilla05_Boomerang(int k) {  // 8890fc
 
   if (!ancilla_aux_timer[k]) {
     if (button_b_frames < 9 && player_handler_timer == 0) {
-      if (link_is_bunny_mirror || link_auxiliary_state || link_item_in_hand == 0 && (enhanced_features0 & kFeatures0_MiscBugFixes)) {
+      if ((link_is_bunny_mirror || link_auxiliary_state || link_item_in_hand == 0) && (enhanced_features0 & kFeatures0_MiscBugFixes)) {
         Boomerang_Terminate(k);
         return;
       }
@@ -1359,7 +1359,7 @@ void Boomerang_StopOffScreen(int k) {  // 8892ab
 void Boomerang_Terminate(int k) {  // 8892f5
   ancilla_type[k] = 0;
   flag_for_boomerang_in_place = 0;
-  if (link_item_in_hand & 0x80) {
+  if (link_item_in_hand & item_in_hand_boomerang) { // boomerang in hand
     link_item_in_hand = 0;
     button_mask_b_y &= ~0x40;
     if (!(button_mask_b_y & 0x80))
@@ -1592,7 +1592,7 @@ void Bomb_CheckSpriteAndPlayerDamage(int k) {  // 889815
   static const uint8 kBomb_Dmg_Speed[16] = {32, 32, 32, 32, 32, 32, 28, 28, 28, 28, 28, 28, 24, 24, 24, 24};
   static const uint8 kBomb_Dmg_Zvel[16] = {16, 16, 16, 16, 16, 16, 12, 12, 12, 12, 8, 8, 8, 8, 8, 8};
   static const uint8 kBomb_Dmg_Delay[16] = {32, 32, 32, 32, 32, 32, 24, 24, 24, 24, 24, 24, 16, 16, 16, 16};
-  static const uint8 kBomb_Dmg_ToLink[3] = {8, 4, 2};
+  static const uint8 kBomb_Dmg_ToLink[3] = {8, 4, 2}; //depending on link armor level
 
   if (ancilla_item_to_link[k] == 0 || ancilla_item_to_link[k] >= 9)
     return;
@@ -3390,7 +3390,7 @@ void Ancilla22_ItemReceipt(int k) {  // 88c38a
     if (ancilla_timer[k] != 17)
       goto endif_1;
     word_7E02CD = 0xDF3;
-    follower_indicator = 0xe;
+    follower_indicator = follower_indicator_HandleTrigger;
     goto endif_6;
   }
 
@@ -3418,7 +3418,7 @@ endif_11:
   item_receipt_method = 0;
   a = ancilla_item_to_link[k];
   if (a == 23 && link_heart_pieces == 0) {
-    Link_ReceiveItem(0x26, 0);
+    Link_ReceiveItem(receiveitem_index_heart_container, 0);
     ancilla_type[k] = 0;
     flag_unk1 = 0;
     return;
@@ -4016,7 +4016,7 @@ void Ancilla36_Flute(int k) {  // 88cfaa
       if (Ancilla_CheckLinkCollision(k, 2, &coll_out) && !related_to_hookshot && link_auxiliary_state == 0) {
         ancilla_type[k] = 0;
         item_receipt_method = 0;
-        Link_ReceiveItem(0x14, 0);
+        Link_ReceiveItem(receiveitem_index_flute, 0);
         return;
       }
     }
@@ -4483,7 +4483,7 @@ void Ancilla31_ByrnaSpark(int k) {  // 88dc70
 
   uint8 flags = 2;
   if (submodule_index == 0) {
-    if (current_item_y != 13) {
+    if (current_item_y != ciaLI_CaneOfByrna) {
 kill_me:
       link_disable_sprite_damage = 0;
       ancilla_type[k] = 0;
@@ -4668,7 +4668,7 @@ void Ancilla27_Duck(int k) {  // 88dde8
         link_disable_sprite_damage = 0;
         byte_7E03FD = 0;
         countdown_for_blink = 144;
-        if (!((follower_indicator == 12 || follower_indicator == 13) && follower_dropped)) {
+        if (!((follower_indicator == follower_indicator_PurpleChess || follower_indicator == follower_indicator_BigBomb) && follower_dropped)) {
           Follower_Initialize();
         }
       }
@@ -4693,8 +4693,8 @@ void Ancilla27_Duck(int k) {  // 88dde8
       if (a == 0x2a || a == 0x1f || a == 0x30 || a == 0x31 || a == 0x41)
         ancilla_type[i] = 0;
     }
-    if (follower_indicator == 9) {
-      follower_indicator = 0;
+    if (follower_indicator == follower_indicator_LockSmith) {
+      follower_indicator = follower_indicator_noone;
       tagalong_var5 = 0;
     }
   }
@@ -5377,9 +5377,9 @@ void Ancilla3A_BigBombExplosion(int k) {  // 88f18d
     }
   }
   if (ancilla_item_to_link[k] == 3 && ancilla_arr3[k] == 1) {
-    // Changed so this is reset elsewhere. Some code depends on the value 13.
-    uint8 old = (enhanced_features0 & kFeatures0_MiscBugFixes) ? follower_indicator : 0;
-    follower_indicator = 13;
+    // Changed so this is reset elsewhere. Some code depends on the value 13 (follower_indicator_BigBomb).
+    uint8 old = (enhanced_features0 & kFeatures0_MiscBugFixes) ? follower_indicator : follower_indicator_noone;
+    follower_indicator = follower_indicator_BigBomb;
     Bomb_CheckForDestructibles(Ancilla_GetX(k), Ancilla_GetY(k), 0); // r14?
     follower_indicator = old;
   }
@@ -6255,7 +6255,7 @@ void AncillaAdd_DwarfPoof(uint8 ain, uint8 yin) {  // 89915f
   int k = Ancilla_AddAncilla(ain, yin);
   if (k < 0)
     return;
-  if (follower_indicator == 8)
+  if (follower_indicator == follower_indicator_Smith)
     sound_effect_1 = Link_CalculateSfxPan() | 0x14;
   else
     sound_effect_1 = Link_CalculateSfxPan() | 0x15;
@@ -6271,7 +6271,7 @@ void AncillaAdd_DwarfPoof(uint8 ain, uint8 yin) {  // 89915f
 }
 
 void AncillaAdd_BushPoof(uint16 x, uint16 y) {  // 8991c3
-  if (!(link_item_in_hand & 0x40))
+  if (!(link_item_in_hand & item_in_hand_magic_powder)) //Ycar not magic powder in hand
     return;
   int k = Ancilla_AddAncilla(0x3f, 4);
   if (k >= 0) {
@@ -6338,7 +6338,7 @@ void AncillaAdd_MagicPowder(uint8 a, uint8 y) {  // 8992f0
     Ancilla_SetXY(k, link_x_coord + kMagicPower_X[j], link_y_coord + kMagicPower_Y[j]);
     Ancilla_CheckTileCollision(k);
     byte_7E0333 = ancilla_tile_attr[k];
-    if (current_item_active == 9) {
+    if (current_item_active == ciaLI_Lamp) {
       ancilla_type[k] = 0;
       return;
     }

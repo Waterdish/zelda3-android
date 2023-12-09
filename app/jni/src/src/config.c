@@ -475,6 +475,10 @@ static bool HandleIniConfig(int section, const char *key, char *value) {
       return ParseBoolBit(value, &g_config.features0, kFeatures0_GameChangingBugFixes);
     } else if (StringEqualsNoCase(key, "CancelBirdTravel")) {
       return ParseBoolBit(value, &g_config.features0, kFeatures0_CancelBirdTravel);
+    } else if (StringEqualsNoCase(key, "Pokemode")) {
+        return ParseBoolBit(value, &g_config.features0, kFeatures0_Pokemode);
+    } else if (StringEqualsNoCase(key, "PrincessZeldaHelps")) {
+        return ParseBoolBit(value, &g_config.features0, kFeatures0_PrincessZeldaHelps);
     }
   }
   return false;
