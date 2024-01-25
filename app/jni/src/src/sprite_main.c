@@ -21308,7 +21308,9 @@ void Wizzrobe_FireBeam(int k) {  // 9e9e15
 }
 
 void Sprite_9A_Kyameron(int k) {  // 9e9e7b
-  Generic_PutInBottle(k, bottle_state_9A_Kyameron); //Pokemode
+  if (!sprite_delay_main[k]){ //Condition Needed in Pokemode to avoid freezing when hitting Kyameron
+    Generic_PutInBottle(k, bottle_state_9A_Kyameron);//Pokemode
+  }
   PrepOamCoordsRet info;
   if (!sprite_ai_state[k])
     Sprite_PrepOamCoord(k, &info);
