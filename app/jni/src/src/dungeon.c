@@ -5560,7 +5560,7 @@ uint8 ThievesAttic_DrawLightenedHole(uint16 pos6, uint16 a, Point16U *pt) {  // 
 }
 
 uint8 HandleItemTileAction_Dungeon(uint16 x, uint16 y) {  // 81dabb
-  if (!(link_item_in_hand & 2)) {
+  if (!(link_item_in_hand & item_in_hand_hammer)) { // not hammer in hand
     if (!(enhanced_features0 & kFeatures0_BreakPotsWithSword) ||
         button_b_frames == 0 || link_sword_type == 1)
       return 0;
@@ -5570,7 +5570,7 @@ uint8 HandleItemTileAction_Dungeon(uint16 x, uint16 y) {  // 81dabb
   if ((tile & 0xf0) == 0x70) {
     uint16 tile2 = dung_replacement_tile_state[tile & 0xf];
     if ((tile2 & 0xf0f0) == 0x4040) {  // Hammer peg
-      if (!(link_item_in_hand & 2))
+      if (!(link_item_in_hand & item_in_hand_hammer)) // not hammer in hand
         return 0;  // only hammers on pegs
       dung_misc_objs_index = (tile & 0xf) * 2;
       RoomDraw_16x16Single(dung_misc_objs_index);
@@ -6461,8 +6461,8 @@ void Module_PreDungeon() {  // 82821e
   Dungeon_ResetTorchBackgroundAndPlayer();
   Link_CheckBunnyStatus();
   ResetThenCacheRoomEntryProperties();
-  if (follower_indicator == 13) {
-    follower_indicator = 0;
+  if (follower_indicator == follower_indicator_BigBomb) {
+    follower_indicator = follower_indicator_noone;
     super_bomb_indicator_unk2 = 0;
     Hud_RemoveSuperBombIndicator();
   }
@@ -7309,8 +7309,8 @@ void Module07_0E_02_ApplyFilterIf() {  // 8290a1
 }
 
 void Dungeon_SyncBackgroundsFromSpiralStairs() {  // 8290c7
-  if (follower_indicator == 6 && BYTE(dungeon_room_index) == 100)
-    follower_indicator = 0;
+  if (follower_indicator == follower_indicator_BlindMaiden && BYTE(dungeon_room_index) == 100)
+    follower_indicator = follower_indicator_noone;
   uint8 bak = link_is_on_lower_level;
   link_y_coord += which_staircase_index & 4 ? 48 : -48;
   link_is_on_lower_level = kTeleportPitLevel2[cur_staircase_plane];
@@ -8770,7 +8770,7 @@ void CrystalCutscene_Initialize() {  // 9ecce3
 void CrystalCutscene_SpawnMaiden() {  // 9ecd48
   memset(sprite_state, 0, 16);
   SpriteSpawnInfo info;
-  int j = Sprite_SpawnDynamically(0, 0xab, &info);
+  int j = Sprite_SpawnDynamically(0, 0xab, &info);//Sprite_ab_CrystalMaiden
   sprite_x_hi[j] = link_x_coord >> 8;
   sprite_y_hi[j] = link_y_coord >> 8;
   sprite_x_lo[j] = 0x78;
@@ -8779,16 +8779,16 @@ void CrystalCutscene_SpawnMaiden() {  // 9ecd48
   sprite_oam_flags[j] = 0xb;
   sprite_subtype2[j] = 0;
   sprite_floor[j] = 0;
-  sprite_A[j] = Ancilla_TerminateSelectInteractives(j);
+  sprite_A[j] = Ancilla_TerminateSelectInteractives(j);// returns j or 5
   item_receipt_method = 0;
   if (BYTE(cur_palace_index_x2) == 24) {
     sprite_oam_flags[j] = 9;
-    follower_indicator = 1;
+    follower_indicator = follower_indicator_Zelda;
   } else {
-    follower_indicator = 6;
+    follower_indicator = follower_indicator_BlindMaiden;
   }
   LoadFollowerGraphics();
-  follower_indicator = 0;
+  follower_indicator = follower_indicator_noone;
   dung_floor_x_offs = BG2HOFS_copy2 - link_x_coord + 0x79;
   dung_floor_y_offs = 0x30 - (uint8)BG1VOFS_copy2;
   dung_hdr_collision_2_mirror = 1;

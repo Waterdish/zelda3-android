@@ -3,4 +3,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorGold">#F7CF00</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGreenTree">#255025</color>
+    <color name="colorGreenMatrix">#7deb01</color>
+    <color name="colorBlueSky">#7f90d8</color>
+    <color name="colorBlueWater">#362c83</color>
+    <color name="colorRedZ">#d4251a</color>
+    <color name="colorGreySword">#777777</color>
+    <color name="colorWhiteShine">#FFFFFF</color>
+
 </resources>

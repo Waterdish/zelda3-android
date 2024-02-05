@@ -725,7 +725,7 @@ bool PlayerOam_WantInvokeSword() {
       link_player_handler_state != kPlayerState_SpinAttacking &&
       link_player_handler_state != kPlayerState_SpinAttackMotion &&
       !link_state_bits && !link_force_hold_sword_up && !link_electrocute_on_touch) {
-    if (link_item_in_hand & 0x40)
+    if (link_item_in_hand & item_in_hand_magic_powder)
       return false;
     if (link_position_mode & 0x3d || link_item_in_hand & 0x93)
       return true;
@@ -970,7 +970,7 @@ continue_after_set:
     uint8 oam_y = kDrawSword_y[r2] + ycoord - zcoord;
     uint8 oam_x = kDrawSword_x[r2] + xcoord;
 
-    if ((link_item_in_hand & 2) ? (player_handler_timer == 2 && link_delay_timer_spin_attack == 15) : ((link_item_in_hand & 5) == 0)) {
+    if ((link_item_in_hand & item_in_hand_hammer) ? (player_handler_timer == 2 && link_delay_timer_spin_attack == 15) : ((link_item_in_hand & 5) == 0)) {
       player_oam_y_offset = kSwordOamYOffs[r2];
       player_oam_x_offset = kSwordOamXOffs[r2];
     }
@@ -979,7 +979,7 @@ continue_after_set:
       assert(link_state_bits == 0);
       oam_pal = kPlayerOam_Rod[eq_selected_rod - 1] << 8;
     }
-    if ((link_position_mode & 8) && current_item_y == 13)
+    if ((link_position_mode & 8) && current_item_y == ciaLI_CaneOfByrna)
       oam_pal = 0x400;  // cane of byrna
 
     int oam_pos = ((scratch_0_var ? kSwordStuff_oam_index_ptrs_1 : kSwordStuff_oam_index_ptrs_0)[r4loc] + sort_sprites_offset_into_oam_buffer)>>2;

@@ -9,6 +9,8 @@
 #include "player.h"
 #include "misc.h"
 
+#include "messaging.h"
+
 #define byte_7FFE01 (*(uint8*)(g_ram+0x1FE01))
 static const int8 kSpriteKeese_Tab2[16] = {0, 8, 11, 14, 16, 14, 11, 8, 0, -8, -11, -14, -16, -14, -11, -8};
 static const int8 kSpriteKeese_Tab3[16] = {-16, -14, -11, -8, 0, 8, 11, 14, 16, 14, 11, 8, 0, -9, -11, -14};
@@ -462,18 +464,18 @@ static const uint8 kGanon_Draw_Flags[204] = {
 };
 static const uint8 kGanon_Draw_Char2[12] = { 0x40, 0x42, 0, 0, 0x42, 0x40, 0x82, 0x80, 0xa0, 0xa0, 0x80, 0x82 };
 static const uint8 kGanon_Draw_Flags2[12] = { 0, 0, 0, 0x40, 0x40, 0x40, 0x40, 0x40, 0, 0x40, 0, 0 };
-static HandlerFuncK *const kSpriteActiveRoutines[243] = {
-  &Sprite_Raven,
+static HandlerFuncK *const kSpriteActiveRoutines[243] = { // is that the actual display of the sprite?
+  &Sprite_00_Raven, //00
   &Sprite_01_Vulture_bounce,
   &Sprite_02_StalfosHead,
-  NULL,
-  &Sprite_PullSwitch_bounce,
-  &Sprite_PullSwitch_bounce,
-  &Sprite_PullSwitch_bounce,
-  &Sprite_PullSwitch_bounce,
+  NULL,                      // 03
+  &Sprite_PullSwitch_bounce, // 04
+  &Sprite_PullSwitch_bounce, // 05
+  &Sprite_PullSwitch_bounce, // 06
+  &Sprite_PullSwitch_bounce, // 07
   &Sprite_08_Octorok,
   &Sprite_09_GiantMoldorm,
-  &Sprite_08_Octorok,
+  &Sprite_08_Octorok, // 0A
   &Sprite_0B_Cucco,
   &Sprite_0C_OctorokStone,
   &Sprite_0D_Buzzblob,
@@ -499,39 +501,39 @@ static HandlerFuncK *const kSpriteActiveRoutines[243] = {
   &Sprite_21_WaterSwitch,
   &Sprite_22_Ropa,
   &Sprite_23_RedBari,
-  &Sprite_23_RedBari,
+  &Sprite_23_RedBari, //24
   &Sprite_25_TalkingTree,
   &Sprite_26_HardhatBeetle,
   &Sprite_27_Deadrock,
   &Sprite_28_DarkWorldHintNPC,
-  &Sprite_HumanMulti_1,
-  &Sprite_SweepingLady,
+  &Sprite_29_HumanMulti_1,
+  &Sprite_2A_SweepingLady,
   &Sprite_2B_Hobo,
-  &Sprite_Lumberjacks,
+  &Sprite_2C_Lumberjacks,
   &Sprite_2D_TelepathicTile,
   &Sprite_2E_FluteKid,
-  &Sprite_MazeGameLady,
-  &Sprite_MazeGameGuy,
-  &Sprite_FortuneTeller,
-  &Sprite_QuarrelBros,
+  &Sprite_2F_MazeGameLady,
+  &Sprite_30_MazeGameGuy,
+  &Sprite_31_FortuneTeller,
+  &Sprite_32_QuarrelBros,
   &Sprite_33_RupeePull,
-  &Sprite_YoungSnitchLady,
-  &Sprite_InnKeeper,
-  &Sprite_Witch,
+  &Sprite_34_YoungSnitchLady,
+  &Sprite_35_InnKeeper,
+  &Sprite_36_Witch,
   &Sprite_37_Waterfall,
   &Sprite_38_EyeStatue,
   &Sprite_39_Locksmith,
   &Sprite_3A_MagicBat,
-  &Sprite_DashItem,
-  &Sprite_TroughBoy,
-  &Sprite_OldSnitchLady,
-  &Sprite_17_Hoarder,
-  &Sprite_TutorialGuardOrBarrier,
-  &Sprite_TutorialGuardOrBarrier,
+  &Sprite_3B_DashItem,
+  &Sprite_3C_TroughBoy,
+  &Sprite_3D_OldSnitchLady,
+  &Sprite_17_Hoarder, //3E
+  &Sprite_TutorialGuardOrBarrier, //3F
+  &Sprite_TutorialGuardOrBarrier, //40
   // Trampoline 48 entries
   &Sprite_41_BlueGuard,
-  &Sprite_41_BlueGuard,
-  &Sprite_41_BlueGuard,
+  &Sprite_41_BlueGuard, //42
+  &Sprite_41_BlueGuard, //43
   &Sprite_44_BluesainBolt,
   &Sprite_45_HogSpearMan,
   &Sprite_46_BlueArcher,
@@ -543,7 +545,7 @@ static HandlerFuncK *const kSpriteActiveRoutines[243] = {
   &Sprite_4C_Geldman,
   &Sprite_4D_Toppo,
   &Sprite_4E_Popo,
-  &Sprite_4E_Popo,
+  &Sprite_4E_Popo, //4F
   &Sprite_50_Cannonball,
   &Sprite_51_ArmosStatue,
   &Sprite_52_KingZora,
@@ -556,34 +558,34 @@ static HandlerFuncK *const kSpriteActiveRoutines[243] = {
   &Sprite_59_LostWoodsBird,
   &Sprite_5A_LostWoodsSquirrel,
   &Sprite_5B_Spark_Clockwise,
-  &Sprite_5B_Spark_Clockwise,
+  &Sprite_5B_Spark_Clockwise, //5C
   &Sprite_5D_Roller_VerticalDownFirst,
-  &Sprite_5D_Roller_VerticalDownFirst,
-  &Sprite_5D_Roller_VerticalDownFirst,
-  &Sprite_5D_Roller_VerticalDownFirst,
+  &Sprite_5D_Roller_VerticalDownFirst, //5E
+  &Sprite_5D_Roller_VerticalDownFirst, //5F
+  &Sprite_5D_Roller_VerticalDownFirst, //60
   &Sprite_61_Beamos,
   &Sprite_62_MasterSword,
   &Sprite_63_DebirandoPit,
   &Sprite_64_Debirando,
   &Sprite_65_ArcheryGame,
   &Sprite_66_WallCannonVerticalLeft,
-  &Sprite_66_WallCannonVerticalLeft,
-  &Sprite_66_WallCannonVerticalLeft,
-  &Sprite_66_WallCannonVerticalLeft,
+  &Sprite_66_WallCannonVerticalLeft,//67
+  &Sprite_66_WallCannonVerticalLeft,//68
+  &Sprite_66_WallCannonVerticalLeft,//69
   &Sprite_6A_BallNChain,
   &Sprite_6B_CannonTrooper,
   &Sprite_6C_MirrorPortal,
   &Sprite_6D_Rat,
   &Sprite_6E_Rope,
-  &Sprite_6F_Keese,
+  &Sprite_6F_Keese,//bat
   &Sprite_70_KingHelmasaurFireball,
   &Sprite_71_Leever,
   &Sprite_72_FairyPond,
   &Sprite_73_UncleAndPriest,
-  &Sprite_RunningMan,
-  &Sprite_BottleVendor,
+  &Sprite_74_RunningMan, //74
+  &Sprite_75_BottleVendor, //75
   &Sprite_76_Zelda,
-  &Sprite_15_Antifairy,
+  &Sprite_15_Antifairy, //77
   &Sprite_78_MrsSahasrahla,
   // Trampoline 68 entries
   &Sprite_79_Bee,
@@ -592,12 +594,12 @@ static HandlerFuncK *const kSpriteActiveRoutines[243] = {
   &Sprite_7C_GreenStalfos,
   &Sprite_7D_BigSpike,
   &Sprite_7E_Firebar_Clockwise,
-  &Sprite_7E_Firebar_Clockwise,
+  &Sprite_7E_Firebar_Clockwise, //7F
   &Sprite_80_Firesnake,
   &Sprite_81_Hover,
   &Sprite_82_AntifairyCircle,
   &Sprite_83_GreenEyegore,
-  &Sprite_83_GreenEyegore,
+  &Sprite_83_GreenEyegore,//84
   &Sprite_85_YellowStalfos,
   &Sprite_86_Kodongo,
   &Sprite_87_KodongoFire,
@@ -615,14 +617,14 @@ static HandlerFuncK *const kSpriteActiveRoutines[243] = {
   &Sprite_93_Bumper,
   &Sprite_94_Pirogusu,
   &Sprite_95_LaserEyeLeft,
-  &Sprite_95_LaserEyeLeft,
-  &Sprite_95_LaserEyeLeft,
-  &Sprite_95_LaserEyeLeft,
+  &Sprite_95_LaserEyeLeft,//96
+  &Sprite_95_LaserEyeLeft,//97
+  &Sprite_95_LaserEyeLeft,//98
   &Sprite_99_Pengator,
   &Sprite_9A_Kyameron,
   &Sprite_9B_Wizzrobe,
   &Sprite_9C_Zoro,
-  &Sprite_9C_Zoro,
+  &Sprite_9C_Zoro,//9D
   &Sprite_9E_HauntedGroveOstritch,
   &Sprite_9F_HauntedGroveRabbit,
   &Sprite_A0_HauntedGroveBird,
@@ -630,20 +632,20 @@ static HandlerFuncK *const kSpriteActiveRoutines[243] = {
   &Sprite_A2_Kholdstare,
   &Sprite_A3_KholdstareShell,
   &Sprite_A4_FallingIce,
-  &Sprite_Zazak_Main,
-  &Sprite_Zazak_Main,
+  &Sprite_A5_Zazak_Main,//A5
+  &Sprite_A5_Zazak_Main,//A6
   &Sprite_A7_Stalfos,
   &Sprite_A8_GreenZirro,
-  &Sprite_A8_GreenZirro,
+  &Sprite_A8_GreenZirro,//A9
   &Sprite_AA_Pikit,
   &Sprite_AB_CrystalMaiden,
   &Sprite_AC_Apple,
   &Sprite_AD_OldMan,
   &Sprite_AE_Pipe_Down,
-  &Sprite_AE_Pipe_Down,
-  &Sprite_AE_Pipe_Down,
-  &Sprite_AE_Pipe_Down,
-  &Sprite_B2_PlayerBee,
+  &Sprite_AE_Pipe_Down,//AF
+  &Sprite_AE_Pipe_Down,//B0
+  &Sprite_AE_Pipe_Down,//B1
+  &Sprite_B2_PlayerBee,// Ycar: here is the bee
   &Sprite_B3_PedestalPlaque,
   &Sprite_B4_PurpleChest,
   &Sprite_B5_BombShop,
@@ -681,279 +683,279 @@ static HandlerFuncK *const kSpriteActiveRoutines[243] = {
   &Sprite_D4_Landmine,
   &Sprite_D5_DigGameGuy,
   &Sprite_D6_Ganon,
-  &Sprite_D6_Ganon,
+  &Sprite_D6_Ganon,//D7
   &Sprite_D8_Heart,
-  &Sprite_D9_GreenRupee,
-  &Sprite_D9_GreenRupee,
-  &Sprite_D9_GreenRupee,
-  &Sprite_D9_GreenRupee,
-  &Sprite_D9_GreenRupee,
-  &Sprite_D9_GreenRupee,
-  &Sprite_D9_GreenRupee,
-  &Sprite_D9_GreenRupee,
-  &Sprite_D9_GreenRupee,
-  &Sprite_D9_GreenRupee,
+  &Sprite_D9_GreenRupee,//D0 //GreenRupee
+  &Sprite_D9_GreenRupee,//DA //BlueRupee
+  &Sprite_D9_GreenRupee,//DB //RedRupee
+  &Sprite_D9_GreenRupee,//DC //1Bomb
+  &Sprite_D9_GreenRupee,//DD //4Bombs
+  &Sprite_D9_GreenRupee,//DE //8Bombs
+  &Sprite_D9_GreenRupee,//DF //SmallMagic
+  &Sprite_D9_GreenRupee,//E0 //BigMagic
+  &Sprite_D9_GreenRupee,//E1 //5Arrows
+  &Sprite_D9_GreenRupee,//E2 //10Arrows
   &Sprite_E3_Fairy,
   &Sprite_E4_SmallKey,
-  &Sprite_E4_SmallKey,
-  &Sprite_D9_GreenRupee,
+  &Sprite_E4_SmallKey,//E5
+  &Sprite_D9_GreenRupee,//E6
   &Sprite_E7_Mushroom,
   &Sprite_E8_FakeSword,
   &Sprite_E9_PotionShop,
-  &Sprite_HeartContainer,
-  &Sprite_HeartPiece,
+  &Sprite_EA_HeartContainer,//EA
+  &Sprite_EB_HeartPiece,//EB
   &Sprite_EC_ThrownItem,
   &Sprite_ED_SomariaPlatform,
   &Sprite_EE_MovableMantle,
-  &Sprite_ED_SomariaPlatform,
-  &Sprite_ED_SomariaPlatform,
-  &Sprite_ED_SomariaPlatform,
+  &Sprite_ED_SomariaPlatform,//EF
+  &Sprite_ED_SomariaPlatform,//F0
+  &Sprite_ED_SomariaPlatform,//F1
   &Sprite_F2_MedallionTablet,
 };
 static HandlerFuncK *const kSpritePrep_Main[243] = {
-  &SpritePrep_Raven,
-  &SpritePrep_Vulture,
-  &SpritePrep_DoNothingA,
-  NULL,
-  &SpritePrep_Switch,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Switch,
-  &SpritePrep_SwitchFacingUp,
-  &SpritePrep_Octorok,
-  &SpritePrep_Moldorm,
-  &SpritePrep_Octorok,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Octoballoon,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_MiniHelmasaur,
-  &SpritePrep_ThievesTownGrate,
-  &SpritePrep_Antifairy,
-  &SpritePrep_Sage,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_MiniMoldorm_bounce,
-  &SpritePrep_Poe,
-  &SpritePrep_Smithy,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Statue,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_CrystalSwitch,
-  &SpritePrep_SickKid,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_WaterLever,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Bari,
-  &SpritePrep_Bari,
-  &SpritePrep_TalkingTree,
-  &SpritePrep_HardhatBeetle,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Storyteller,
-  &SpritePrep_Adults,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_Hobo,
-  &SpritePrep_MagicBat,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_FluteKid,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_FortuneTeller,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_RupeePull,
-  &SpritePrep_Snitch_bounce_2,
-  &SpritePrep_Snitch_bounce_3,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Locksmith,
-  &SpritePrep_MagicBat,
-  &SpritePrep_BonkItem,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_Snitch_bounce_1,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_AgahnimsBarrier,
-  &SpritePrep_StandardGuard,
-  &SpritePrep_StandardGuard,
-  &SpritePrep_StandardGuard,
-  &SpritePrep_TrooperAndArcherSoldier,
-  &SpritePrep_TrooperAndArcherSoldier,
-  &SpritePrep_TrooperAndArcherSoldier,
-  &SpritePrep_TrooperAndArcherSoldier,
-  &SpritePrep_TrooperAndArcherSoldier,
-  &SpritePrep_TrooperAndArcherSoldier,
-  &SpritePrep_TrooperAndArcherSoldier,
-  &SpritePrep_WeakGuard,
-  &SpritePrep_Geldman,
-  &SpritePrep_Kyameron,
-  &SpritePrep_Popo,
-  &SpritePrep_Popo2,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingD,
-  &SpritePrep_KingZora,
-  &SpritePrep_ArmosKnight,
-  &SpritePrep_Lanmolas,
-  &SpritePrep_SwimmingZora,
-  &SpritePrep_WalkingZora,
-  &SpritePrep_DesertStatue,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_LostWoodsBird,
-  &SpritePrep_LostWoodsSquirrel,
-  &SpritePrep_Spark,
-  &SpritePrep_Spark,
-  &SpritePrep_Roller_VerticalDownFirst,
-  &SpritePrep_RollerUpDown,
-  &SpritePrep_Roller_HorizontalRightFirst,
-  &SpritePrep_RollerLeftRight,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_MasterSword,
-  &SpritePrep_DebirandoPit,
-  &SpritePrep_FireDebirando,
-  &SpritePrep_ArrowGame_bounce,
-  &SpritePrep_WallCannon,
-  &SpritePrep_WallCannon,
-  &SpritePrep_WallCannon,
-  &SpritePrep_WallCannon,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Rat,
-  &SpritePrep_Rope,
-  &SpritePrep_Keese,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_FairyPond,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_UncleAndPriest_bounce,
-  &SpritePrep_RunningMan,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_Zelda_bounce,
-  &SpritePrep_Antifairy,
-  &SpritePrep_MrsSahasrahla,
-  &SpritePrep_OverworldBonkItem,
-  &SpritePrep_Agahnim,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_GreenStalfos,
-  &SpritePrep_BigSpike,
-  &SpritePrep_FireBar,
-  &SpritePrep_FireBar,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_AntifairyCircle,
-  &SpritePrep_Eyegore,
-  &SpritePrep_Eyegore,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_Kodongo,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_Mothula,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_Spike,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_Arrghus,
-  &SpritePrep_Arrghi,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_Blob,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_DoNothingG,
-  &SpritePrep_HelmasaurKing,
-  &SpritePrep_Bumper,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_LaserEye_bounce,
-  &SpritePrep_LaserEye_bounce,
-  &SpritePrep_LaserEye_bounce,
-  &SpritePrep_LaserEye_bounce,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Kyameron,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Zoro,
-  &SpritePrep_Babasu,
-  &SpritePrep_HauntedGroveOstritch,
-  &SpritePrep_HauntedGroveAnimal,
-  &SpritePrep_HauntedGroveAnimal,
-  &SpritePrep_MoveDown_8px,
-  &SpritePrep_Kholdstare,
-  &SpritePrep_KholdstareShell,
-  &SpritePrep_FallingIce,
-  &SpritePrep_Zazakku,
-  &SpritePrep_Zazakku,
-  &SpritePrep_Stalfos,
-  &SpritePrep_Bomber,
-  &SpritePrep_Bomber,
-  &SpritePrep_DoNothingC,
-  &SpritePrep_DoNothingH,
-  &SpritePrep_OverworldBonkItem,
-  &SpritePrep_OldMan_bounce,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_NiceBee,
-  &SpritePrep_PedestalPlaque,
-  &SpritePrep_PurpleChest,
-  &SpritePrep_BombShoppe,
-  &SpritePrep_Kiki,
-  &SpritePrep_BlindMaiden,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_BullyAndVictim,
-  &SpritePrep_Whirlpool,
-  &SpritePrep_Shopkeeper,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_Vitreous,
-  &SpritePrep_MiniVitreous,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Catfish,
-  &SpritePrep_CutsceneAgahnim,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Gibo,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_Pokey,
-  &SpritePrep_BigFairy,
-  &SpritePrep_Tektite,
-  &SpritePrep_Chainchomp_bounce,
-  &SpritePrep_Trinexx,
-  &SpritePrep_Trinexx,
-  &SpritePrep_Trinexx,
-  &SpritePrep_Blind,
-  &SpritePrep_Swamola,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_RockStal,
-  &SpritePrep_IgnoreProjectiles,
-  &SpritePrep_DiggingGameGuy_bounce,
-  &SpritePrep_Ganon,
-  &SpritePrep_Ganon,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Absorbable,
-  &SpritePrep_Fairy,
-  &SpritePrep_SmallKey,
-  &SpritePrep_BigKey,
-  &SpritePrep_ShieldPickup,
-  &SpritePrep_Mushroom,
-  &SpritePrep_FakeSword,
-  &SpritePrep_PotionShop,
-  &SpritePrep_HeartContainer,
-  &SpritePrep_HeartPiece,
-  &SpritePrep_ThrowableScenery,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_Mantle,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_DoNothingA,
-  &SpritePrep_MedallionTable,
+  &SpritePrep_Raven,         //00
+  &SpritePrep_Vulture,       //01
+  &SpritePrep_DoNothingA,    //02
+  NULL,                      //03
+  &SpritePrep_Switch,        //04
+  &SpritePrep_DoNothingA,    //05
+  &SpritePrep_Switch,        //06
+  &SpritePrep_SwitchFacingUp,//07
+  &SpritePrep_Octorok,       //08
+  &SpritePrep_Moldorm,       //09
+  &SpritePrep_Octorok,       //0A
+  &SpritePrep_DoNothingA,    //0B
+  &SpritePrep_DoNothingA,//0C
+  &SpritePrep_DoNothingA,//0D
+  &SpritePrep_DoNothingA,//0E
+  &SpritePrep_Octoballoon,//0F
+  &SpritePrep_DoNothingA,//10
+  &SpritePrep_DoNothingA,//11
+  &SpritePrep_DoNothingA,//12
+  &SpritePrep_MiniHelmasaur,//13
+  &SpritePrep_ThievesTownGrate,//14
+  &SpritePrep_Antifairy,//15
+  &SpritePrep_Sage,//16
+  &SpritePrep_DoNothingA,//17
+  &SpritePrep_MiniMoldorm_bounce,//18
+  &SpritePrep_Poe,//19
+  &SpritePrep_Smithy,//1A
+  &SpritePrep_DoNothingA,//1B
+  &SpritePrep_Statue,//1C
+  &SpritePrep_IgnoreProjectiles,//1D
+  &SpritePrep_CrystalSwitch,//1E
+  &SpritePrep_SickKid,//1F
+  &SpritePrep_DoNothingA,//20
+  &SpritePrep_WaterLever,//21
+  &SpritePrep_DoNothingA,//22
+  &SpritePrep_Bari,//23
+  &SpritePrep_Bari,//24
+  &SpritePrep_TalkingTree,//25
+  &SpritePrep_HardhatBeetle,//26
+  &SpritePrep_DoNothingA,//27
+  &SpritePrep_Storyteller,//28
+  &SpritePrep_Adults,//29
+  &SpritePrep_IgnoreProjectiles,//2A
+  &SpritePrep_Hobo,//2B
+  &SpritePrep_MagicBat,//2C
+  &SpritePrep_IgnoreProjectiles,//2D
+  &SpritePrep_FluteKid,//2E
+  &SpritePrep_IgnoreProjectiles,//2F
+  &SpritePrep_IgnoreProjectiles,//30
+  &SpritePrep_FortuneTeller,//31
+  &SpritePrep_IgnoreProjectiles,//32
+  &SpritePrep_RupeePull,        //33
+  &SpritePrep_Snitch_bounce_2,//34
+  &SpritePrep_Snitch_bounce_3,//35
+  &SpritePrep_IgnoreProjectiles,//36
+  &SpritePrep_IgnoreProjectiles,//37
+  &SpritePrep_DoNothingA,//38
+  &SpritePrep_Locksmith,//39
+  &SpritePrep_MagicBat,//3A
+  &SpritePrep_BonkItem,//3B
+  &SpritePrep_IgnoreProjectiles,//3C
+  &SpritePrep_Snitch_bounce_1,//3D
+  &SpritePrep_DoNothingA,//3E
+  &SpritePrep_DoNothingA,//3F
+  &SpritePrep_AgahnimsBarrier,//40
+  &SpritePrep_StandardGuard,//41
+  &SpritePrep_StandardGuard,//42
+  &SpritePrep_StandardGuard,//43
+  &SpritePrep_TrooperAndArcherSoldier,//44
+  &SpritePrep_TrooperAndArcherSoldier,//45
+  &SpritePrep_TrooperAndArcherSoldier,//46
+  &SpritePrep_TrooperAndArcherSoldier,//47
+  &SpritePrep_TrooperAndArcherSoldier,//48
+  &SpritePrep_TrooperAndArcherSoldier,//49
+  &SpritePrep_TrooperAndArcherSoldier,//4A
+  &SpritePrep_WeakGuard,//4B
+  &SpritePrep_Geldman,//4C
+  &SpritePrep_Kyameron,//4D
+  &SpritePrep_Popo,//4E
+  &SpritePrep_Popo2,//4F
+  &SpritePrep_DoNothingA,//50
+  &SpritePrep_DoNothingD,//51
+  &SpritePrep_KingZora,//52
+  &SpritePrep_ArmosKnight,//53
+  &SpritePrep_Lanmolas,//54
+  &SpritePrep_SwimmingZora,//55
+  &SpritePrep_WalkingZora,//56
+  &SpritePrep_DesertStatue,//57
+  &SpritePrep_DoNothingA,//58
+  &SpritePrep_LostWoodsBird,//59
+  &SpritePrep_LostWoodsSquirrel,//5A
+  &SpritePrep_Spark,//5B
+  &SpritePrep_Spark,//5C
+  &SpritePrep_Roller_VerticalDownFirst,//5D
+  &SpritePrep_RollerUpDown,//5E
+  &SpritePrep_Roller_HorizontalRightFirst,//5F
+  &SpritePrep_RollerLeftRight,//60
+  &SpritePrep_DoNothingA,//61
+  &SpritePrep_MasterSword,//62
+  &SpritePrep_DebirandoPit,//63
+  &SpritePrep_FireDebirando,//64
+  &SpritePrep_ArrowGame_bounce,//65
+  &SpritePrep_WallCannon,//66
+  &SpritePrep_WallCannon,//67
+  &SpritePrep_WallCannon,//68
+  &SpritePrep_WallCannon,//69
+  &SpritePrep_DoNothingA,//6A
+  &SpritePrep_DoNothingA,//6B
+  &SpritePrep_DoNothingA,//6C
+  &SpritePrep_Rat,//6D
+  &SpritePrep_Rope,//6E
+  &SpritePrep_Keese,//6F
+  &SpritePrep_DoNothingG,//70
+  &SpritePrep_FairyPond,//71
+  &SpritePrep_IgnoreProjectiles,//72
+  &SpritePrep_UncleAndPriest_bounce,//73
+  &SpritePrep_RunningMan,//74
+  &SpritePrep_IgnoreProjectiles,//75
+  &SpritePrep_Zelda_bounce,//76
+  &SpritePrep_Antifairy,//77
+  &SpritePrep_MrsSahasrahla,//78
+  &SpritePrep_OverworldBonkItem,//79
+  &SpritePrep_Agahnim,//7A
+  &SpritePrep_DoNothingG,//7B
+  &SpritePrep_GreenStalfos,//7C
+  &SpritePrep_BigSpike,//7D
+  &SpritePrep_FireBar,//7E
+  &SpritePrep_FireBar,//7F
+  &SpritePrep_DoNothingG,//80 Firesnake
+  &SpritePrep_DoNothingG,//81 Hover
+  &SpritePrep_AntifairyCircle,//82
+  &SpritePrep_Eyegore,//83
+  &SpritePrep_Eyegore,//84
+  &SpritePrep_DoNothingG,//85
+  &SpritePrep_Kodongo,//86
+  &SpritePrep_DoNothingG,//87
+  &SpritePrep_Mothula,//88
+  &SpritePrep_DoNothingG,//89
+  &SpritePrep_Spike,//8A
+  &SpritePrep_DoNothingG,//8B
+  &SpritePrep_Arrghus,//8C
+  &SpritePrep_Arrghi,//8D
+  &SpritePrep_DoNothingG,//8E
+  &SpritePrep_Blob,//8F
+  &SpritePrep_DoNothingG,//90
+  &SpritePrep_DoNothingG,//91
+  &SpritePrep_HelmasaurKing,//92
+  &SpritePrep_Bumper,//93
+  &SpritePrep_DoNothingA,//94
+  &SpritePrep_LaserEye_bounce,//95
+  &SpritePrep_LaserEye_bounce,//96
+  &SpritePrep_LaserEye_bounce,//97
+  &SpritePrep_LaserEye_bounce,//98
+  &SpritePrep_DoNothingA,//99
+  &SpritePrep_Kyameron,//9A
+  &SpritePrep_DoNothingA,//9B
+  &SpritePrep_Zoro,//9C
+  &SpritePrep_Babasu,//9D
+  &SpritePrep_HauntedGroveOstritch,//9E
+  &SpritePrep_HauntedGroveAnimal,//9F
+  &SpritePrep_HauntedGroveAnimal,//A0
+  &SpritePrep_MoveDown_8px,//A1
+  &SpritePrep_Kholdstare,//A2
+  &SpritePrep_KholdstareShell,//A3
+  &SpritePrep_FallingIce,//A4
+  &SpritePrep_Zazakku,//A5
+  &SpritePrep_Zazakku,//A6
+  &SpritePrep_Stalfos,//A7
+  &SpritePrep_Bomber,//A8
+  &SpritePrep_Bomber,//A9
+  &SpritePrep_DoNothingC,//AA
+  &SpritePrep_DoNothingH,//AB
+  &SpritePrep_OverworldBonkItem,//AC
+  &SpritePrep_OldMan_bounce,//AD
+  &SpritePrep_DoNothingA,//AE
+  &SpritePrep_DoNothingA,//AF
+  &SpritePrep_DoNothingA,//B0
+  &SpritePrep_DoNothingA,//B1
+  &SpritePrep_NiceBee,//B2
+  &SpritePrep_PedestalPlaque,//B3
+  &SpritePrep_PurpleChest,//B4
+  &SpritePrep_BombShoppe,//B5
+  &SpritePrep_Kiki,//B6
+  &SpritePrep_BlindMaiden,//B7
+  &SpritePrep_DoNothingA,//B8
+  &SpritePrep_BullyAndVictim,//B9
+  &SpritePrep_Whirlpool,//BA
+  &SpritePrep_Shopkeeper,//BB
+  &SpritePrep_IgnoreProjectiles,//BC
+  &SpritePrep_Vitreous,//BD
+  &SpritePrep_MiniVitreous,//BE
+  &SpritePrep_DoNothingA,//BF
+  &SpritePrep_Catfish,//C0
+  &SpritePrep_CutsceneAgahnim,//C1
+  &SpritePrep_DoNothingA,//C2
+  &SpritePrep_Gibo,//C3
+  &SpritePrep_DoNothingA,//C4
+  &SpritePrep_IgnoreProjectiles,//C5
+  &SpritePrep_IgnoreProjectiles,//C6
+  &SpritePrep_Pokey,//C7
+  &SpritePrep_BigFairy,//C8
+  &SpritePrep_Tektite,//C9
+  &SpritePrep_Chainchomp_bounce,//CA
+  &SpritePrep_Trinexx,//CB
+  &SpritePrep_Trinexx,//CC
+  &SpritePrep_Trinexx,//CD
+  &SpritePrep_Blind,//CE
+  &SpritePrep_Swamola,//CF
+  &SpritePrep_DoNothingA,//D0
+  &SpritePrep_DoNothingA,//D1
+  &SpritePrep_IgnoreProjectiles,//D2
+  &SpritePrep_RockStal,//D3
+  &SpritePrep_IgnoreProjectiles,//D4
+  &SpritePrep_DiggingGameGuy_bounce,//D5
+  &SpritePrep_Ganon,//D6
+  &SpritePrep_Ganon,//D7
+  &SpritePrep_Absorbable,//D8
+  &SpritePrep_Absorbable,//D9
+  &SpritePrep_Absorbable,//DA
+  &SpritePrep_Absorbable,//DB
+  &SpritePrep_Absorbable,//DC
+  &SpritePrep_Absorbable,//DD
+  &SpritePrep_Absorbable,//DE
+  &SpritePrep_Absorbable,//DF
+  &SpritePrep_Absorbable,//E0
+  &SpritePrep_Absorbable,//E1
+  &SpritePrep_Absorbable,//E2
+  &SpritePrep_Fairy,//E3
+  &SpritePrep_SmallKey,//E4
+  &SpritePrep_BigKey,//E5
+  &SpritePrep_ShieldPickup,//E6
+  &SpritePrep_Mushroom,//E7
+  &SpritePrep_FakeSword,//E8
+  &SpritePrep_PotionShop,//E9
+  &SpritePrep_HeartContainer,//EA
+  &SpritePrep_HeartPiece,//EB
+  &SpritePrep_ThrowableScenery,//EC
+  &SpritePrep_DoNothingA,//ED
+  &SpritePrep_Mantle,//EE
+  &SpritePrep_DoNothingA,//EF
+  &SpritePrep_DoNothingA,//F0
+  &SpritePrep_DoNothingA,//F1
+  &SpritePrep_MedallionTable,//F2
 };
 
 void Sprite_PullSwitch_bounce(int k) {
@@ -1416,6 +1418,7 @@ void ChainBallTrooper_Draw(int k) {
 }
 
 void Sprite_6B_CannonTrooper(int k) {
+  Generic_PutInBottle(k, bottle_state_6B_CannonTrooper); //Pokemode
   if (sprite_C[k] != 0) {
     Sprite_Cannonball(k);
     return;
@@ -1430,7 +1433,7 @@ void Bee_PutInBottle(int k) {
   if (!choice_in_multiselect_box) {
     int j = Sprite_Find_EmptyBottle();
     if (j >= 0) {
-      link_bottle_info[j] = 7 + sprite_head_dir[k];
+      link_bottle_info[j] = bottle_state_bee + sprite_head_dir[k];
       Hud_RefreshIcon();
       sprite_state[k] = 0;
       return;
@@ -1495,7 +1498,7 @@ void Kiki_LyingInwait(int k) {
   Sprite_PrepOamCoord(k, &info);
   if (Sprite_ReturnIfInactive(k))
     return;
-  if (link_is_bunny_mirror | link_disable_sprite_damage | countdown_for_blink || follower_indicator == 10)
+  if (link_is_bunny_mirror | link_disable_sprite_damage | countdown_for_blink || follower_indicator == follower_indicator_Kiki)
     return;
   if (save_ow_event_info[BYTE(overworld_screen_index)] & 0x20)
     return;
@@ -1504,7 +1507,7 @@ void Kiki_LyingInwait(int k) {
     if (enhanced_features0 & kFeatures0_MiscBugFixes)
       follower_dropped = 0;  // defuse bomb
 
-    follower_indicator = 10;
+    follower_indicator = follower_indicator_Kiki;
     tagalong_var5 = 0;
     LoadFollowerGraphics();
     Follower_Initialize();
@@ -1537,6 +1540,7 @@ static inline int8 TrinexxHeadSin(uint16 a, uint8 b) {
 }
 
 void Sprite_CC(int k) {
+  Generic_PutInBottle(k, bottle_state_CC); //Pokemode
   if (!sprite_E[k]) {
     Sprite_Sidenexx(k);
     return;
@@ -1551,6 +1555,7 @@ void Sprite_CC(int k) {
 }
 
 void Sprite_CD(int k) {
+  Generic_PutInBottle(k, bottle_state_CD); //Pokemode
   if (!sprite_E[k]) {
     Sprite_Sidenexx(k);
     return;
@@ -1622,7 +1627,7 @@ void Hobo_Draw(int k) {  // 84ea60
 }
 
 bool Landmine_CheckDetonationFromHammer(int k) {  // 84ea81
-  if (!(link_item_in_hand & 10) || player_oam_y_offset == 0x80)
+  if (!(link_item_in_hand & 10) || player_oam_y_offset == 0x80) //if 0xa not in hand
     return false;
   SpriteHitBox hb;
   Player_SetupActionHitBox(&hb);
@@ -1665,6 +1670,7 @@ void Sprite_SpawnSparkleGarnish(int k) {  // 858008
 }
 
 void Sprite_70_KingHelmasaurFireball(int k) {  // 85807f
+  Generic_PutInBottle(k, bottle_state_70_KingHelmasaurFireball); //Pokemode
   static const uint8 kHelmasaurFireball_Char[3] = {0xcc, 0xcc, 0xca};
   static const uint8 kHelmasaurFireball_Flags[2] = {0x33, 0x73};
   static const uint8 kHelmasaurFireball_Gfx[4] = {2, 2, 1, 0};
@@ -1724,6 +1730,7 @@ void Sprite_70_KingHelmasaurFireball(int k) {  // 85807f
 }
 
 void Sprite_66_WallCannonVerticalLeft(int k) {  // 858090
+  Generic_PutInBottle(k, bottle_state_66_WallCannonVerticalLeft); //Pokemode
   static const int8 kWallCannon_Xvel[4] = {0, 0, -16, 16};
   static const int8 kWallCannon_Yvel[4] = {-16, 16, 0, 0};
   static const uint8 kWallCannon_Gfx[4] = {0, 0, 2, 2};
@@ -1771,6 +1778,7 @@ void Sprite_66_WallCannonVerticalLeft(int k) {  // 858090
 }
 
 void Sprite_65_ArcheryGame(int k) {  // 8581ff
+  Generic_PutInBottle(k, bottle_state_65_ArcheryGame); //Pokemode
   link_num_arrows = sprite_subtype[k];
   if (sprite_A[k] == 0)
     ArcheryGame_Host(k);
@@ -1889,6 +1897,7 @@ void ArcheryGame_DrawPrize(int k) {  // 8584cf
 }
 
 void Sprite_63_DebirandoPit(int k) {  // 858531
+  Generic_PutInBottle(k, bottle_state_63_DebirandoPit); //Pokemode
   static const uint8 kDebirandoPit_OpeningGfx[4] = {5, 4, 3, 3};
   static const uint8 kDebirandoPit_ClosingGfx[4] = {3, 3, 4, 5};
 
@@ -1994,6 +2003,7 @@ void DebirandoPit_Draw(int k) {  // 8586e4
 }
 
 void Sprite_64_Debirando(int k) {  // 85874d
+  Generic_PutInBottle(k, bottle_state_64_Debirando); //Pokemode
   static const uint8 kDebirando_Emerge_Gfx[2] = {1, 0};
   static const uint8 kDebirando_Submerge_Gfx[2] = {0, 1};
   Debirando_Draw(k);
@@ -2065,6 +2075,7 @@ void Debirando_Draw(int k) {  // 858857
 }
 
 void Sprite_62_MasterSword(int k) {  // 8588c5
+  Generic_PutInBottle(k, bottle_state_62_MasterSword); //Pokemode
   switch (sprite_subtype2[k]) {
   case 0: MasterSword_Main(k); break;
   case 1: Sprite_MasterSword_LightFountain(k); break;
@@ -2127,7 +2138,7 @@ void MasterSword_Main(int k) {  // 8588d6
     if (!sprite_delay_main[k]) {
       save_ow_event_info[BYTE(overworld_screen_index)] |= 0x40;
       item_receipt_method = 0;
-      Link_ReceiveItem(1, 0);
+      Link_ReceiveItem(receiveitem_index_master_sword, 0);
       savegame_map_icons_indicator = 5;
       link_unk_master_sword = 0;
       sprite_ai_state[k] = 5;
@@ -2368,6 +2379,7 @@ void MasterSword_Draw(int k) {  // 858da8
 }
 
 void Sprite_5D_Roller_VerticalDownFirst(int k) {  // 858dde
+  Generic_PutInBottle(k, bottle_state_5D_Roller_VerticalDownFirst); //Pokemode
   static const int8 kSpikeRoller_XYvel[6] = {-16, 16, 0, 0, -16, 16};
   sprite_graphics[k] = sprite_subtype2[k] >> 1 & 1 | sprite_D[k] & 2;
   SpikeRoller_Draw(k);
@@ -2421,6 +2433,7 @@ void SpikeRoller_Draw(int k) {  // 858ee3
 }
 
 void Sprite_61_Beamos(int k) {  // 858f54
+  Generic_PutInBottle(k, bottle_state_61_Beamos); //Pokemode
   if (sprite_C[k] == 1) {
     Sprite_Beamos_Laser(k);
     return;
@@ -2610,6 +2623,7 @@ void Sprite_Beamos_LaserHit(int k) {  // 8592da
 }
 
 void Sprite_5B_Spark_Clockwise(int k) {  // 85933f
+  Generic_PutInBottle(k, bottle_state_5B_Spark_Clockwise); //Pokemode
   static const uint8 kSpark_OamFlags[4] = {0, 0x40, 0x80, 0xc0};
   static const uint8 kSpark_directions[8] = {1, 3, 2, 0, 7, 5, 6, 4};
   int j;
@@ -2656,6 +2670,7 @@ void Sprite_5B_Spark_Clockwise(int k) {  // 85933f
 }
 
 void Sprite_59_LostWoodsBird(int k) {  // 85940e
+  Generic_PutInBottle(k, bottle_state_59_LostWoodsBird); //Pokemode
   if (sprite_delay_aux1[k])
     return;
   sprite_oam_flags[k] = sprite_oam_flags[k] & ~0x40 | (sign8(sprite_x_vel[k]) ? 0 : 0x40);
@@ -2680,6 +2695,7 @@ void Sprite_59_LostWoodsBird(int k) {  // 85940e
 }
 
 void Sprite_5A_LostWoodsSquirrel(int k) {  // 859468
+  Generic_PutInBottle(k, bottle_state_5A_LostWoodsSquirrel); //Pokemode
   if (sprite_delay_aux1[k])
     return;
   sprite_oam_flags[k] = sprite_oam_flags[k] & ~0x40 | (sign8(sprite_x_vel[k]) ? 0 : 0x40);
@@ -2698,6 +2714,7 @@ void Sprite_5A_LostWoodsSquirrel(int k) {  // 859468
 }
 
 void Sprite_58_Crab(int k) {  // 8594b5
+  Generic_PutInBottle(k, bottle_state_58_Crab); //Pokemode
   static const int8 kCrab_Xvel[4] = {28, -28, 0, 0};
   static const int8 kCrab_Yvel[4] = {0, 0, 12, -12};
   Crab_Draw(k);
@@ -2734,6 +2751,7 @@ void Crab_Draw(int k) {  // 859510
 }
 
 void Sprite_57_DesertStatue(int k) {  // 85956d
+  Generic_PutInBottle(k, bottle_state_57_DesertStatue); //Pokemode
   static const uint8 kDesertBarrier_NextD[4] = {3, 2, 0, 1};
   DesertBarrier_Draw(k);
   if (Sprite_ReturnIfInactive(k))
@@ -2794,6 +2812,7 @@ void DesertBarrier_Draw(int k) {  // 859626
 }
 
 void Sprite_55_Zora(int k) {  // 85967b
+  Generic_PutInBottle(k, bottle_state_55_Zora); //Pokemode
   if (sprite_E[k])
     Sprite_Fireball(k);
   else
@@ -2953,6 +2972,7 @@ void Zora_Draw(int k) {  // 8598f5
 }
 
 void Sprite_52_KingZora(int k) {  // 85995b
+  Generic_PutInBottle(k, bottle_state_52_KingZora); //Pokemode
   ZoraKing_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -3147,6 +3167,7 @@ void ZoraKing_Draw(int k) {  // 859cab
 }
 
 void Sprite_56_WalkingZora(int k) {  // 859d4a
+  Generic_PutInBottle(k, bottle_state_56_WalkingZora); //Pokemode
   if (sprite_F[k]) {
     sprite_F[k] = 0;
     sprite_B[k] = 3;
@@ -3304,6 +3325,7 @@ void SpriteDraw_WaterRipple(int k) {  // 859ffa
 }
 
 void Sprite_53_ArmosKnight(int k) {  // 85a036
+  Generic_PutInBottle(k, bottle_state_53_ArmosKnight); //Pokemode
   static const uint8 kArmosKnight_Gfx1[5] = {5, 4, 3, 2, 1};
   static const int8 kArmosKnight_Xv[2] = {16, -16};
 
@@ -3445,6 +3467,7 @@ void ArmosKnight_Draw(int k) {  // 85a274
 }
 
 void Sprite_54_Lanmolas(int k) {  // 85a3a2
+  Generic_PutInBottle(k, bottle_state_54_Lanmolas); //Pokemode
   static const uint8 kLanmola_RandB[8] = {0x58, 0x50, 0x60, 0x70, 0x80, 0x90, 0xa0, 0x98};
   static const uint8 kLanmola_RandC[8] = {0x68, 0x60, 0x70, 0x80, 0x90, 0xa0, 0xa8, 0x80};
   static const int8 kLanmola_ZVel[2] = {2, -2};
@@ -3640,6 +3663,7 @@ void Lanmola_Draw(int k) {  // 85a64a
 }
 
 void Sprite_6D_Rat(int k) {  // 85a8b0
+  Generic_PutInBottle(k, bottle_state_6D_Rat); //Pokemode
   static const uint8 kSpriteRat_Tab0[16] = {0, 0, 3, 3, 1, 2, 4, 5, 1, 2, 4, 5, 0, 0, 3, 3};
   static const uint8 kSpriteRat_Tab1[16] = {0, 0x40, 0, 0x40, 0, 0, 0, 0, 0x40, 0x40, 0x40, 0x40, 0x80, 0xc0, 0x80, 0xc0};
   static const uint8 kSpriteRat_Tab2[8] = {10, 11, 6, 7, 2, 3, 14, 15};
@@ -3685,6 +3709,7 @@ void Sprite_6D_Rat(int k) {  // 85a8b0
 }
 
 void Sprite_6E_Rope(int k) {  // 85a973
+  Generic_PutInBottle(k, bottle_state_6E_Rope); //Pokemode
   int j;
   j = sprite_A[k];
   sprite_graphics[k] = kSpriteRope_Gfx[j];
@@ -3753,6 +3778,7 @@ void Sprite_6E_Rope(int k) {  // 85a973
 }
 
 void Sprite_6F_Keese(int k) {  // 85aa8b
+  Generic_PutInBottle(k, bottle_state_6F_Keese); //Pokemode
   static const int8 kSpriteKeese_Tab1[2] = {1, -1};
   static const int8 kSpriteKeese_Tab0[4] = {2, 10, 6, 14};
 
@@ -3828,6 +3854,7 @@ void Sprite_SpawnPoofGarnish(int j) {  // 85ab9c
 }
 
 void Sprite_6C_MirrorPortal(int k) {  // 85af75
+  Generic_PutInBottle(k, bottle_state_6C_MirrorPortal); //Pokemode
   if (savegame_is_darkworld) {
     sprite_state[k] = 0;
   } else {
@@ -3867,6 +3894,7 @@ void Sprite_6C_MirrorPortal(int k) {  // 85af75
 }
 
 void Sprite_6A_BallNChain(int k) {  // 85b01b
+  Generic_PutInBottle(k, bottle_state_6A_BallNChain); //Pokemode
   ChainBallTrooper_Draw(k);
   if (sprite_ai_state[k] < 2)
     HIBYTE(dungmap_var8) = 0x80;
@@ -3998,6 +4026,7 @@ void SpriteDraw_BNCFlail(int k, PrepOamCoordsRet *info) {  // 85b468
 }
 
 void Sprite_50_Cannonball(int k) {  // 85b648
+  Generic_PutInBottle(k, bottle_state_50_Cannonball); //Pokemode
   if (!sprite_ai_state[k])
     SpriteDraw_SingleLarge(k);
   else
@@ -4034,6 +4063,7 @@ void SpriteDraw_BigCannonball(int k) {  // 85b6a4
 }
 
 void Sprite_51_ArmosStatue(int k) {  // 85b703
+  Generic_PutInBottle(k, bottle_state_51_ArmosStatue); //Pokemode
   Armos_Draw(k);
   if (sprite_F[k])
     Sprite_ZeroVelocity_XY(k);
@@ -4097,6 +4127,7 @@ void Armos_Draw(int k) {  // 85b7ef
 }
 
 void Sprite_4E_Popo(int k) {  // 85b80a
+  Generic_PutInBottle(k, bottle_state_4E_Popo); //Pokemode
   Bot_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -4151,6 +4182,7 @@ void Bot_Draw(int k) {  // 85b89a
 }
 
 void Sprite_4C_Geldman(int k) {  // 85b8b3
+  Generic_PutInBottle(k, bottle_state_4C_Geldman); //Pokemode
   static const uint8 kGerudoMan_EmergeGfx[8] = {3, 2, 0, 0, 0, 0, 0, 0};
   static const uint8 kGerudoMan_PursueGfx[2] = {4, 5};
   static const uint8 kGerudoMan_SubmergeGfx[5] = {0, 1, 2, 3, 3};
@@ -4236,6 +4268,7 @@ void GerudoMan_Draw(int k) {  // 85ba24
 }
 
 void Sprite_4D_Toppo(int k) {  // 85ba85
+  Generic_PutInBottle(k, bottle_state_4D_Toppo); //Pokemode
   static const int8 kToppo_XOffs[4] = {-32, 32, 0, 0};
   static const int8 kToppo_YOffs[4] = {0, 0, -32, 32};
 
@@ -4333,6 +4366,7 @@ void Toppo_Draw(int k) {  // 85bbff
 }
 
 void Sprite_4B_GreenKnifeGuard(int k) {  // 85bca2
+  Generic_PutInBottle(k, bottle_state_4B_GreenKnifeGuard); //Pokemode
   sprite_graphics[k] = kSprite_Recruit_Gfx[sprite_D[k] + (sprite_subtype2[k] >> 1 & 4) ];
   Recruit_Draw(k);
   if (Sprite_ReturnIfInactive(k))
@@ -4392,6 +4426,7 @@ void Recruit_Draw(int k) {  // 85bd7e
 }
 
 void Sprite_4A_BombGuard(int k) {  // 85be0a
+  Generic_PutInBottle(k, bottle_state_4A_BombGuard); //Pokemode
   if (sprite_C[k] == 0) {
     BombGuard(k);
     return;
@@ -4555,11 +4590,35 @@ void SpriteDraw_SpriteBombExplosion(int k) {  // 85c113
 }
 
 void Sprite_41_BlueGuard(int k) {  // 85c155
-  if (sprite_C[k])
+  if (sprite_C[k]){ //If it is a probe, (a guard's probe but not a guard)
     Probe(k);
-  else
-    Guard_Main(k);
+    }
+  else{
+    Generic_PutInBottle(k, bottle_state_41_BlueGuard); //Pokemode
+    Guard_Main(k);}
 }
+
+// Make Probe() target something else than Link
+int FindTargetNearby(int k){
+    int n = 16;
+    int j = k * 4 & 0xf;
+    do {
+      if (j == k || sprite_state[j] < 9 || sprite_pause[j])
+        continue;
+      if (!(sprite_flags2[j] & 0x80)) {
+        if (sprite_floor[k] != sprite_floor[j] || sprite_flags4[j] & 0x40 || sprite_ignore_projectile[j])
+          continue;
+      } else {
+        if (!sprite_head_dir[k] || !(sprite_bump_damage[j] & 0x40))
+          continue;
+      }
+      return j; //We have found sprite j
+    } while (j = (j - 1) & 0xf, --n);
+
+    return -1; //Nothing found
+}
+
+
 
 void Probe(int k) {  // 85c15d
   SpriteAddXY(k, (int8)sprite_x_vel[k], (int8)sprite_y_vel[k]);
@@ -4581,7 +4640,7 @@ void Probe(int k) {  // 85c15d
   if (is_close) {
     int p = sprite_C[k] - 1;
     if (sprite_ai_state[p] != 3) {
-      sprite_ai_state[p] = 3;
+      sprite_ai_state[p] = 3; // make Guard in facing Link state
       if (sprite_type[p] != 0xce) {
         sprite_delay_main[p] = 16;
         sprite_subtype2[p] = 0;
@@ -4620,13 +4679,15 @@ void Guard_Main(int k) {  // 85c227
   }
   if (Sprite_ReturnIfInactive(k))
     return;
-  Guard_ParrySwordAttacks(k);
-  if ((Sprite_CheckDamageToLink(k) || sprite_alert_flag) && sprite_ai_state[k] < 3) {
-    sprite_ai_state[k] = 3;
-    Guard_SetTimerAndAssertTileHitBox(k, 0x20);
-  } else if (sprite_F[k] != 0 && sprite_F[k] >= 4) {
-    sprite_ai_state[k] = 4;
-    Guard_SetTimerAndAssertTileHitBox(k, 0x80);
+  if (sprite_ai_state[k]!=10){//Pokemode, when ally
+      Guard_ParrySwordAttacks(k);
+      if ((Sprite_CheckDamageToLink(k) || sprite_alert_flag) && sprite_ai_state[k] < 3) {
+        sprite_ai_state[k] = 3;
+        Guard_SetTimerAndAssertTileHitBox(k, 0x20);
+      } else if (sprite_F[k] != 0 && sprite_F[k] >= 4) {
+        sprite_ai_state[k] = 4;
+        Guard_SetTimerAndAssertTileHitBox(k, 0x80);
+      }
   }
   if (Sprite_ReturnIfRecoiling(k))
     return;
@@ -4641,7 +4702,7 @@ void Guard_Main(int k) {  // 85c227
     sprite_G[k] = 0;
 
   switch (sprite_ai_state[k]) {
-  case 0:
+  case 0:// Patrol walk
     Sprite_ZeroVelocity_XY(k);
     if (sprite_delay_main[k])
       break;
@@ -4659,7 +4720,7 @@ void Guard_Main(int k) {  // 85c227
     }
     sprite_delay_aux1[k] = 12;
     break;
-  case 1: {
+  case 1: {// Look around 
     Sprite_Guard_SendOutProbe(k);
     if ((sprite_subtype[k] & 7) >= 5) {
       Guard_ShootProbeAndStuff(k);
@@ -4696,24 +4757,45 @@ void Guard_Main(int k) {  // 85c227
     }
     break;
   }
-  case 3:
+  case 3:{ //Soldier is hurt case? 
     Sprite_ZeroVelocity_XY(k);
     sprite_head_dir[k] = Sprite_DirectionToFaceLink(k, NULL);
     if (sprite_delay_main[k] == 0) {
-      sprite_ai_state[k] = 4;
+      sprite_ai_state[k] = 4; //Timer for facing still is over, now let's run towards link
       Guard_SetTimerAndAssertTileHitBox(k, 255);
     }
-    break;
-  case 4:
+    break;}
+  case 4:{ // run towards Link
     if (sprite_delay_main[k]) {
-      Soldier_Func12(k);
+      Soldier_Func12(k); //run towards link 
     } else {
       sprite_anim_clock[k] = kSoldier_Tab1[sprite_D[k]];
       Sprite_ZeroVelocity_XY(k);
-      sprite_ai_state[k] = 2;
+      sprite_ai_state[k] = 2; // back to sending probe state
       sprite_delay_main[k] = 160;
     }
-    break;
+    break;}
+  case 10:{ // custom (friendly) case, in Pokemode:
+    if (enhanced_features0 & kFeatures0_Pokemode){
+      Sprite_SpawnSparkleGarnish(k);
+      int j = FindTargetNearby(k);
+      if(j>=0){
+          Soldier_Func12Target(k, j); //Ycar
+          PlayerBee_HoneInOnTarget(j, k); //Ycar sprite hurts stuff here
+      }else
+      { //go back to Link
+          bool is_close;
+          uint16 x = Sprite_GetX(k) - link_x_coord;
+          uint16 y = Sprite_GetY(k) - link_y_coord;
+          is_close = (x < 32 && y < 32 && sprite_floor[k] == link_is_on_lower_level);
+          if(is_close){
+              Sprite_ZeroVelocity_XY(k);
+          }else{
+              Soldier_Func12(k); //run towards link (ycar)
+          }
+      }
+    }
+  }
   }
 }
 
@@ -4750,6 +4832,21 @@ void Guard_SetTimerAndAssertTileHitBox(int k, uint8 a) {  // 85c4d7
   sprite_delay_main[k] = a;
   sprite_subtype[k] = 0;
   sprite_flags[k] = sprite_flags[k] & 0xf | 0x60;
+}
+
+
+void Soldier_Func12Target(int k, int j) {  // Ycar
+  if (((k ^ frame_counter) & 0x1f) == 0) {
+    if (!sprite_G[k]) {
+      sprite_G[k] = 1;
+      SpriteSfx_QueueSfx3WithPan(k, 4);
+    }
+    Sprite_ApplySpeedTowardsTarget(k, j, 16);
+    sprite_D[k] = sprite_head_dir[k] = Sprite_DirectionToFaceTarget(k, j, NULL);
+  }
+  Guard_ApplySpeedInDirection(k);
+  sprite_subtype2[k]++;
+  Guard_TickAndUpdateBody(k);
 }
 
 void Soldier_Func12(int k) {  // 85c500
@@ -4864,6 +4961,7 @@ void Guard_AnimateWeapon(int k, const PrepOamCoordsRet *poc) {  // 85cb64
 }
 
 void Sprite_45_HogSpearMan(int k) {  // 85cbe0
+  Generic_PutInBottle(k, bottle_state_45_HogSpearMan); //Pokemode
   Guard_HandleAllAnimation(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -4893,6 +4991,7 @@ void BoltGuard_TriggerChaseTheme(int k) {  // 85cc3c
 }
 
 void Sprite_44_BluesainBolt(int k) {  // 85cc65
+  Generic_PutInBottle(k, bottle_state_44_BluesainBolt); //Pokemode
   PsychoTrooper_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -4944,6 +5043,7 @@ void SpriteDraw_GuardSpear(int k, PrepOamCoordsRet *info, int spr_offs) {  // 85
 }
 
 void Sprite_48_RedJavelinGuard(int k) {  // 85cde1
+  Generic_PutInBottle(k, bottle_state_48_RedJavelinGuard); //Pokemode
   static const uint8 kJavelinTrooper_Gfx[4] = {12, 0, 18, 8};
   uint8 bak0 = sprite_graphics[k];
   int j = sprite_D[k];
@@ -4958,6 +5058,7 @@ void Sprite_48_RedJavelinGuard(int k) {  // 85cde1
 }
 
 void Sprite_46_BlueArcher(int k) {  // 85cdff
+  Generic_PutInBottle(k, bottle_state_46_BlueArcher); //Pokemode
   uint8 bak0 = sprite_graphics[k];
   int j = sprite_D[k];
   if (sprite_delay_aux1[k] != 0) {
@@ -5151,6 +5252,7 @@ void JavelinTrooper_Draw(int k) {  // 85d192
 }
 
 void Sprite_49_RedBushGuard(int k) {  // 85d1ac
+  Generic_PutInBottle(k, bottle_state_49_RedBushGuard); //Pokemode
   if (sprite_ai_state[k]) {
     if (sprite_ai_state[k] == 2)
       BushJavelinSoldier_Draw(k);
@@ -5161,6 +5263,7 @@ void Sprite_49_RedBushGuard(int k) {  // 85d1ac
 }
 
 void Sprite_47_GreenBushGuard(int k) {  // 85d1bf
+  Generic_PutInBottle(k, bottle_state_47_GreenBushGuard); //Pokemode
   if (sprite_ai_state[k]) {
     if (sprite_graphics[k] >= 14)
       ArcherSoldier_Draw(k);
@@ -5709,7 +5812,7 @@ void Uncle_AtHouse(int k) {  // 85de3e
     }
     break;
   case 4:  // Uncle_ApplyTelepathyFollower
-    follower_indicator = 5;
+    follower_indicator = follower_indicator_Uncle_Telepathy;
     word_7E02CD = 0xdf3;
     sram_progress_flags |= 0x10;
     sprite_state[k] = 0;
@@ -5724,13 +5827,13 @@ void Uncle_InPassage(int k) {  // 85df19
     if (Sprite_CheckDamageToLink_same_layer(k))
       Link_CancelDash();
     if (Sprite_ShowMessageOnContact(k, 0xe) & 0x100) {
-      follower_indicator = 0;
+      follower_indicator = follower_indicator_noone;
       sprite_ai_state[k]++;
     }
     break;
   case 1:  // GiveSwordAndShield
     item_receipt_method = 0;
-    Link_ReceiveItem(0, 0);
+    Link_ReceiveItem(receiveitem_index_sword, 0);
     sprite_ai_state[k]++;
     sprite_graphics[k] = 1;
     which_starting_point = 3;
@@ -5740,8 +5843,9 @@ void Uncle_InPassage(int k) {  // 85df19
   }
 }
 
-void Sprite_QuarrelBros(int k) {  // 85e013
+void Sprite_32_QuarrelBros(int k) {  // 85e013
   QuarrelBros_Draw(k);
+  Generic_PutInBottle(k, bottle_state_32_QuarrelBros); //Pokemode
   if (Sprite_ReturnIfInactive(k))
     return;
   Sprite_TrackBodyToHead(k);
@@ -5781,8 +5885,9 @@ void QuarrelBros_Draw(int k) {  // 85e17f
 
 }
 
-void Sprite_YoungSnitchLady(int k) {  // 85e2f2
-  Sprite_OldSnitchLady(k);
+void Sprite_34_YoungSnitchLady(int k) {  // 85e2f2
+  Generic_PutInBottle(k, bottle_state_34_YoungSnitchLady); //Pokemode
+  Sprite_3D_OldSnitchLady(k);
 }
 
 void YoungSnitchLady_Draw(int k) {  // 85e37f
@@ -5809,7 +5914,8 @@ void YoungSnitchLady_Draw(int k) {  // 85e37f
   SpriteDraw_Shadow(k, &info);
 }
 
-void Sprite_InnKeeper(int k) {  // 85e3af
+void Sprite_35_InnKeeper(int k) {  // 85e3af
+  Generic_PutInBottle(k, bottle_state_35_InnKeeper); //Pokemode
   InnKeeper_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -5827,7 +5933,8 @@ void InnKeeper_Draw(int k) {  // 85e3dc
   SpriteDraw_Shadow(k, &info);
 }
 
-void Sprite_Witch(int k) {  // 85e3fb
+void Sprite_36_Witch(int k) {  // 85e3fb
+  Generic_PutInBottle(k, bottle_state_36_Witch); //Pokemode
   Witch_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -5865,7 +5972,7 @@ void Sprite_Witch(int k) {  // 85e3fb
   case 1:  // grant cane of byrna
     sprite_ai_state[k] = 0;
     item_receipt_method = 0;
-    Link_ReceiveItem(0x18, 0);
+    Link_ReceiveItem(receiveitem_index_cane_of_byrna, 0);
     break;
   }
 }
@@ -5942,7 +6049,8 @@ void SpritePrep_Snitches(int k) {  // 85e67d
   sprite_x_vel[k] = -9;
 }
 
-void Sprite_OldSnitchLady(int k) {  // 85e6aa
+void Sprite_3D_OldSnitchLady(int k) {  // 85e6aa
+  Generic_PutInBottle(k, bottle_state_3D_OldSnitchLady); //Pokemode
   static const int8 kOldSnitchLady_Xd[2] = {-32, 32};
   static const int8 kOldSnitchLady_Xvel[4] = {0, 0, -9, 9};
   static const int8 kOldSnitchLady_Yvel[4] = {-9, 9, 0, 0};
@@ -6053,7 +6161,8 @@ void SpritePrep_RunningMan(int k) {  // 85e896
   sprite_ignore_projectile[k]++;
 }
 
-void Sprite_RunningMan(int k) {  // 85e8b2
+void Sprite_74_RunningMan(int k) {  // 85e8b2
+  Generic_PutInBottle(k, bottle_state_74_RunningMan); //Pokemode
   static const int8 kRunningMan_Xvel2[2] = {-24, 24};
   static const int8 kRunningMan_Xvel[4] = {0, 0, -54, 54};
   static const int8 kRunningMan_Yvel[4] = {-54, 54, 0, 0};
@@ -6156,7 +6265,8 @@ void RunningMan_Draw(int k) {  // 85ea4d
   SpriteDraw_Shadow(k, &info);
 }
 
-void Sprite_BottleVendor(int k) {  // 85ea79
+void Sprite_75_BottleVendor(int k) {  // 85ea79
+  Generic_PutInBottle(k, bottle_state_75_BottleVendor); //Pokemode
   int j;
 
   sprite_A[k] = BottleVendor_Draw(k);
@@ -6192,7 +6302,7 @@ void Sprite_BottleVendor(int k) {  // 85ea79
     break;
   case 2:  // giving
     item_receipt_method = 0;
-    Link_ReceiveItem(0x16, 0);
+    Link_ReceiveItem(receiveitem_index_bottle, 0);
     sram_progress_indicator_3 |= 2;
     link_rupees_goal -= 100;
     sprite_ai_state[k] = 0;
@@ -6242,9 +6352,71 @@ void Priest_SpawnRescuedPrincess() {  // 85ec4c
   Sprite_SetX(k, link_x_coord);
   Sprite_SetY(k, link_y_coord);
   sprite_subtype2[k] = 1;
-  follower_indicator = 0;
+  follower_indicator = follower_indicator_noone;
   sprite_ignore_projectile[k]++;
   sprite_flags4[k] = 3;
+}
+
+void Generic_PutInBottle(int k, int bottle_state){//Pokemode: this is inspired from Bee_PutInBottle(k);
+
+    if (enhanced_features0 & kFeatures0_Pokemode){ //Ycar having fun: allow catching her with Bug Net
+        if (Sprite_CheckDamageFromLink(k) & (kCheckDamageFromPlayer_Net )){ //| ~kCheckDamageFromPlayer_Carry) ) {
+          int j = Sprite_Find_EmptyBottle();
+          if (j >= 0) {
+            link_bottle_info[j] = bottle_state;// + sprite_head_dir[k];
+            Hud_RefreshIcon();
+            sprite_state[k] = 0; //hide the sprite
+
+            LinkItem_Net_endAnimation();
+
+            return;
+          }
+          //Sprite_ShowMessageUnconditional(0xca); //"No empty bottle, set if free"
+          LinkItem_Net_endAnimation();
+          dialogue_message_index = 0xca;
+          Sprite_ShowMessageMinimal();
+          return;
+        }
+    }
+}
+
+void Follower_PutInBottle(int bottle_state){//Ycar this is inspired from Bee_PutInBottle(k);
+    if (enhanced_features0 & kFeatures0_Pokemode){ //Ycar having fun: allow catching her with Bug Net
+        if(follower_indicator != follower_indicator_noone){
+            switch (follower_indicator) {
+            case follower_indicator_0x3: bottle_state = bottle_state_bee; break;
+            case follower_indicator_11 : bottle_state = bottle_state_bee; break;
+            case follower_indicator_BigBomb : bottle_state = bottle_state_B5_BombShop; break;
+            case follower_indicator_BlindMaiden : bottle_state = bottle_state_B7_BlindMaiden; break;
+            case follower_indicator_HandleTrigger : bottle_state = bottle_state_bee; break;
+            case follower_indicator_Kiki: bottle_state = bottle_state_B6_Kiki ; break;
+            case follower_indicator_LockSmith: bottle_state = bottle_state_39_Locksmith ; break;
+            case follower_indicator_OldMan: bottle_state = bottle_state_AD_OldMan ; break;
+            case follower_indicator_PurpleChess: bottle_state = bottle_state_B4_PurpleChest; break;
+            case follower_indicator_Smith: bottle_state = bottle_state_1A_Smithy; break;
+            case follower_indicator_Smithy_Frog: bottle_state = bottle_state_1A_Smithy; break;
+            case follower_indicator_Uncle_Telepathy: bottle_state = bottle_state_73_UncleAndPriest ; break;
+            case follower_indicator_Zelda: bottle_state = bottle_state_76_Zelda; break;
+            default : bottle_state = follower_indicator;
+            }
+            if (kCheckDamageFromPlayer_Net) {
+              int j = Sprite_Find_EmptyBottle();
+              if (j >= 0) {
+                link_bottle_info[j] = bottle_state;// + sprite_head_dir[k];
+                Hud_RefreshIcon();
+
+                //sprite_state[k] = 0; //hide the sprite
+                follower_indicator = follower_indicator_noone;
+                //Follower_NotFollowing();
+                //follower_dropped = 128;
+
+                return;
+              }
+              Sprite_ShowMessageUnconditional(0xca); //"No empty bottle, set if free"
+              return;
+            }
+        }
+    }
 }
 
 void Sprite_76_Zelda(int k) {  // 85ec9e
@@ -6254,6 +6426,17 @@ void Sprite_76_Zelda(int k) {  // 85ec9e
   Sprite_BehaveAsBarrier(k);
   if (Sprite_TrackBodyToHead(k))
     Sprite_MoveXY(k);
+
+  Generic_PutInBottle(k, bottle_state_76_Zelda); //Pokemode
+
+  if (enhanced_features0 & kFeatures0_PrincessZeldaHelps){ // Zelda offering her help
+      if(sprite_ai_state[k]==10){
+          follower_indicator &= follower_indicator_Zelda;
+          Sprite_BecomeFollower(k);
+          sprite_state[k] = 0;
+      }
+  }
+
   switch (sprite_subtype2[k]) {
   case 0: Zelda_InCell(k); break;
   case 1: Zelda_EnteringSanctuary(k); break;
@@ -6301,11 +6484,16 @@ void Zelda_InCell(int k) {  // 85ecbf
     flag_is_link_immobilized = 0;
     which_starting_point = 2;
     SavePalaceDeaths();
-    follower_indicator = 1;
+    follower_indicator = follower_indicator_Zelda;
     Dungeon_FlagRoomData_Quadrants();
     Sprite_BecomeFollower(k);
     sprite_state[k] = 0;
     music_control = 16;
+    break;
+  case 10:  //Ycar: More simple transition to follower state
+    follower_indicator = follower_indicator_Zelda;
+    Sprite_BecomeFollower(k); //Ycar: I should use that more often, haha
+    sprite_state[k] = 0;
     break;
   }
 }
@@ -6359,6 +6547,12 @@ void Zelda_AtSanctuary(int k) {  // 85ee0c
   if (j & 0x100) {
     sprite_D[k] = sprite_head_dir[k] = (uint8)j;
     link_hearts_filler = 0xa0;
+
+    if (enhanced_features0 & kFeatures0_PrincessZeldaHelps){ //Ycar: Zelda offering her help
+        follower_indicator = follower_indicator_Zelda;
+        Sprite_BecomeFollower(k);
+        sprite_state[k] = 0;
+    }
   }
 }
 
@@ -6373,6 +6567,7 @@ void SpritePrep_Mushroom(int k) {  // 85ee53
 }
 
 void Sprite_E7_Mushroom(int k) {  // 85ee78
+  Generic_PutInBottle(k, bottle_state_E7_Mushroom); //Pokemode
   SpriteDraw_SingleLarge(k);
   if (Sprite_CheckIfLinkIsBusy())
     return;
@@ -6384,13 +6579,14 @@ void Sprite_E7_Mushroom(int k) {  // 85ee78
   if (Sprite_CheckDamageToLink_same_layer(k)) {
     sprite_state[k] = 0;
     item_receipt_method = 0;
-    Link_ReceiveItem(0x29, 0);
+    Link_ReceiveItem(receiveitem_index_mushroom, 0);
   } else if ((frame_counter & 0x1f) == 0) {
     sprite_oam_flags[k] ^= 0x40;
   }
 }
 
 void Sprite_E8_FakeSword(int k) {  // 85eeaf
+  Generic_PutInBottle(k, bottle_state_E8_FakeSword); //Pokemode
   FakeSword_Draw(k);
   if (Sprite_ReturnIfPaused(k))
     return;
@@ -6413,7 +6609,8 @@ void SpritePrep_HeartContainer(int k) {  // 85ef01
   HeartUpgrade_CheckIfAlreadyObtained(k);
 }
 
-void Sprite_HeartContainer(int k) {  // 85ef47
+void Sprite_EA_HeartContainer(int k) {  // 85ef47
+  Generic_PutInBottle(k, bottle_state_EA_HeartContainer); //Pokemode
   if (BYTE(cur_palace_index_x2) == 26) {
     sprite_state[k] = 0;
     return;
@@ -6448,20 +6645,21 @@ void Sprite_HeartContainer(int k) {  // 85ef47
   sprite_state[k] = 0;
   if (sprite_A[k]) {
     item_receipt_method = 2;
-    Link_ReceiveItem(0x3e, 0);
+    Link_ReceiveItem(receiveitem_index_heart_something, 0);
     dung_savegame_state_bits |= 0x8000;
     return;
   }
   Link_CancelDash();
   item_receipt_method = 0;
-  Link_ReceiveItem(0x26, 0);
+  Link_ReceiveItem(receiveitem_index_heart_container, 0);
   if (!player_is_indoors)
     save_ow_event_info[BYTE(overworld_screen_index)] |= 0x40;
   else
     dung_savegame_state_bits |= (sprite_x_hi[k] & 1) ? 0x2000 : 0x4000;
 }
 
-void Sprite_HeartPiece(int k) {  // 85f020
+void Sprite_EB_HeartPiece(int k) {  // 85f020
+  Generic_PutInBottle(k, bottle_state_EB_HeartPiece); //Pokemode
   static const uint16 kHeartPieceMsg[4] = {0x158, 0x155, 0x156, 0x157};
   if (!sprite_ai_state[k]) {
     sprite_ai_state[k]++;
@@ -6494,7 +6692,7 @@ void Sprite_HeartPiece(int k) {  // 85f020
   if (link_heart_pieces == 0) {
     Link_CancelDash();
     item_receipt_method = 0;
-    Link_ReceiveItem(0x26, 0);
+    Link_ReceiveItem(receiveitem_index_heart_container, 0);
   } else {
     SpriteSfx_QueueSfx3WithPan(k, 0x2d);
     Sprite_ShowMessageUnconditional(kHeartPieceMsg[link_heart_pieces]);
@@ -6543,7 +6741,7 @@ void Sprite_Sahasrahla(int k) {  // 85f14d
     break;
   case 2:  // grant boots
     item_receipt_method = 0;
-    Link_ReceiveItem(0x4b, 0);
+    Link_ReceiveItem(receiveitem_index_boots, 0);
     sprite_ai_state[k] = 3;
     savegame_map_icons_indicator = 3;
     break;
@@ -6772,6 +6970,7 @@ void MagicShopAssistant_SpawnRedCauldron(int k) {  // 85f5f0
 }
 
 void Sprite_E9_PotionShop(int k) {  // 85f633
+  Generic_PutInBottle(k, bottle_state_E9_PotionShop); //Pokemode
   switch(sprite_subtype2[k]) {
   case 0: Sprite_MagicShopAssistant_Main(k); return;
   case 1: Sprite_BagOfPowder(k); return;
@@ -6790,7 +6989,7 @@ void Sprite_BagOfPowder(int k) {  // 85f644
     return;
   Link_CancelDash();
   item_receipt_method = 0;
-  Link_ReceiveItem(0xd, 0);
+  Link_ReceiveItem(receiveitem_index_bag_of_powder, 0);
   sprite_state[k] = 0;
 }
 
@@ -6830,7 +7029,7 @@ void Sprite_GreenCauldron(int k) {  // 85f68e
   sprite_delay_main[k] = 64;
   link_rupees_goal -= 60;
   item_receipt_method = 0;
-  Link_ReceiveItem(0x2f, 0);
+  Link_ReceiveItem(receiveitem_index_green_cauldron, 0);
 }
 
 void GreenPotionItem_Draw(int k) {  // 85f718
@@ -6870,7 +7069,7 @@ void Sprite_BlueCauldron(int k) {  // 85f72b
   sprite_delay_main[k] = 64;
   link_rupees_goal -= 160;
   item_receipt_method = 0;
-  Link_ReceiveItem(0x30, 0);
+  Link_ReceiveItem(receiveitem_index_blue_cauldron, 0);
 }
 
 void BluePotionItem_Draw(int k) {  // 85f7bd
@@ -6911,7 +7110,7 @@ void Sprite_RedCauldron(int k) {  // 85f7d0
   sprite_delay_main[k] = 64;
   link_rupees_goal -= 120;
   item_receipt_method = 0;
-  Link_ReceiveItem(0x2e, 0);
+  Link_ReceiveItem(receiveitem_index_red_cauldron, 0);
 }
 
 void PotionCauldron_GoBeep(int k) {  // 85f846
@@ -6929,7 +7128,7 @@ void RedPotionItem_Draw(int k) {  // 85f86d
 }
 
 bool PotionCauldron_CheckBottles() {  // 85f880
-  return (link_bottle_info[0] | link_bottle_info[1] | link_bottle_info[2] | link_bottle_info[3]) >= 2;
+  return (link_bottle_info[0] | link_bottle_info[1] | link_bottle_info[2] | link_bottle_info[3]) >= 2; //(it returns true if player has found at least one bottle)
 }
 
 void Sprite_MagicShopAssistant_Main(int k) {  // 85f893
@@ -6965,11 +7164,17 @@ void Shopkeeper_Draw(int k) {  // 85f91b
   SpriteDraw_Shadow(k, &info);
 }
 
-void Sprite_DashItem(int k) {  // 85fbf7
+void Sprite_3B_DashItem(int k) {  // 85fbf7
   switch (sprite_graphics[k]) {
-  case 0: Sprite_BookOfMudora(k); break;
-  case 1: Sprite_BonkKey(k); break;
-  case 2: Sprite_LumberjackTree(k); break;
+  case 0: {
+      Generic_PutInBottle(k, bottle_state_3B_DashItem); //Pokemode
+      Sprite_BookOfMudora(k); break;}
+  case 1: {
+      Generic_PutInBottle(k, bottle_state_3B_DashItem); //Pokemode
+      Sprite_BonkKey(k); break;}
+  case 2: {
+      Generic_PutInBottle(k, bottle_state_3B_DashItem); //Pokemode
+      Sprite_LumberjackTree(k); break;}
   }
 }
 
@@ -7050,7 +7255,7 @@ void Sprite_BookOfMudora(int k) {  // 85fc9e
   case 3:  // give to player
     Link_CancelDash();
     item_receipt_method = 0;
-    Link_ReceiveItem(0x1d, 0);
+    Link_ReceiveItem(receiveitem_index_book_of_mudora, 0);
     sprite_state[k] = 0;
     break;
   }
@@ -7159,7 +7364,8 @@ int LumberjackTree_SpawnLeaves(int k) {  // 85ff39
   return j;
 }
 
-void Sprite_TroughBoy(int k) {  // 85ff66
+void Sprite_3C_TroughBoy(int k) {  // 85ff66
+  Generic_PutInBottle(k, bottle_state_3C_TroughBoy); //Pokemode
   TroughBoy_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -7395,13 +7601,13 @@ void SpritePrep_DoNothingC(int k) {  // 86899b
 void SpritePrep_BlindMaiden(int k) {  // 86899c
   if (!(save_dung_info[0xac] & 0x800)) {
     sprite_ignore_projectile[k]++;
-    if (follower_indicator != 6) {
-      follower_indicator = 6;
+    if (follower_indicator != follower_indicator_BlindMaiden) {
+      follower_indicator = follower_indicator_BlindMaiden;
       follower_dropped = 0;
       tagalong_var5 = 0;
       LoadFollowerGraphics();
       Follower_Initialize();
-      follower_indicator = 0;
+      follower_indicator = follower_indicator_noone;
       return;
     }
   }
@@ -7450,7 +7656,7 @@ void SpritePrep_BullyAndVictim(int k) {  // 868a51
 }
 
 void SpritePrep_PurpleChest(int k) {  // 868a59
-  if (follower_indicator != 12 && !(sram_progress_indicator_3 & 16) && sram_progress_indicator_3 & 32)
+  if (follower_indicator != follower_indicator_PurpleChess && !(sram_progress_indicator_3 & 16) && sram_progress_indicator_3 & 32)
     sprite_ignore_projectile[k]++;
   else
     sprite_state[k] = 0;
@@ -7459,7 +7665,7 @@ void SpritePrep_PurpleChest(int k) {  // 868a59
 void SpritePrep_Smithy(int k) {  // 868a79
   sprite_ignore_projectile[k]++;
   if (savegame_is_darkworld & 64) {
-    if (sram_progress_indicator_3 & 32 || follower_indicator != 0)
+    if (sram_progress_indicator_3 & 32 || follower_indicator != follower_indicator_noone)
       sprite_state[k] = 0;
     else
       sprite_subtype2[k] = 2;
@@ -7744,11 +7950,11 @@ void SpritePrep_Kiki(int k) {  // 868d46
 
 void SpritePrep_Locksmith(int k) {  // 868d59
   sprite_ignore_projectile[k]++;
-  if (follower_indicator == 9) {
+  if (follower_indicator == follower_indicator_LockSmith) {
     sprite_state[k] = 0;
     return;
   }
-  if (follower_indicator == 12) {
+  if (follower_indicator == follower_indicator_PurpleChess) {
     sprite_ai_state[k] = 2;
   }
   if (sram_progress_indicator_3 & 0x10)
@@ -8140,7 +8346,7 @@ void SpritePrep_ShieldPickup(int k) {  // 869174
 
 void SpritePrep_NiceBee(int k) {  // 869175
   uint8 or_bottle = link_bottle_info[0] | link_bottle_info[1] | link_bottle_info[2] | link_bottle_info[3];
-  if (or_bottle & 8)
+  if (or_bottle & bottle_state_goodbee) //if any bottle has 0001000, (which is 8, ie a goodbee?)
     sprite_state[k] = 0;
   sprite_E[k]++;
   sprite_ignore_projectile[k]++;
@@ -8270,6 +8476,7 @@ void Sprite_09_GiantMoldorm(int k) {  // 869469
   };
   static const uint8 kGiantMoldorm_NextDir[16] = {8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7};
   GiantMoldorm_Draw(k);
+  Generic_PutInBottle(k, bottle_state_09_GiantMoldorm); //Pokemode
   if (Sprite_ReturnIfInactive(k))
     return;
   if (sprite_ai_state[k] == 3) {
@@ -8352,6 +8559,7 @@ void Sprite_09_GiantMoldorm(int k) {  // 869469
 
 void Sprite_01_Vulture_bounce(int k) {  // 869473
   static const uint8 kVulture_Gfx[4] = {1, 2, 3, 2};
+  Generic_PutInBottle(k, bottle_state_01_Vulture_bounce); //Pokemode
   sprite_obj_prio[k] |= 0x30;
   Vulture_Draw(k);
   if (Sprite_ReturnIfInactive(k))
@@ -8393,6 +8601,7 @@ void Sprite_27_Deadrock(int k) {  // 86948a
   static const uint8 kDeadRock_OamFlags[9] = {0x40, 0x40, 0, 0, 0, 0x40, 0, 0x40, 0};
   static const int8 kDeadRock_Xvel[4] = {32, -32, 0, 0};
   static const int8 kDeadRock_Yvel[4] = {0, 0, 32, -32};
+  Generic_PutInBottle(k, bottle_state_27_Deadrock); //Pokemode
   int j = (sprite_delay_aux2[k] ? (sprite_delay_aux2[k] & 4) : (sprite_ai_state[k] != 2)) ? sprite_A[k] : 8;
   sprite_graphics[k] = kDeadRock_Gfx[j];
   sprite_oam_flags[k] = sprite_oam_flags[k] & ~0x40 | kDeadRock_OamFlags[j];
@@ -8468,6 +8677,7 @@ void Sprite_20_Sluggula(int k) {  // 8695d9
   static const uint8 kSluggula_OamFlags[8] = {0x40, 0x40, 0, 0, 0, 0, 0, 0};
   static const int8 kSluggula_XYvel[6] = {16, -16, 0, 0, 16, -16};
   int j = sprite_D[k] << 1 | (sprite_subtype2[k] & 8) >> 3;
+  Generic_PutInBottle(k, bottle_state_20_Sluggula); //Pokemode
   sprite_graphics[k] = kSluggula_Gfx[j];
   sprite_oam_flags[k] = sprite_oam_flags[k] & 191 | kSluggula_OamFlags[j];
   SpriteDraw_SingleLarge(k);
@@ -8519,6 +8729,7 @@ void Sprite_19_Poe(int k) {  // 869688
   static const uint8 kPoe_OamFlags[2] = {0x40, 0};
   static const int8 kPoe_Yvel[2] = {8, -8};
   int j;
+  Generic_PutInBottle(k, bottle_state_19_Poe); //Pokemode
   sprite_D[k] = j = sprite_x_vel[k] >> 7;
   sprite_oam_flags[k] = sprite_oam_flags[k] & ~0x40 | kPoe_OamFlags[j];
   if (!sprite_E[k])
@@ -8590,6 +8801,7 @@ void Sprite_18_MiniMoldorm(int k) {  // 869808
   static const int8 kMoldorm_Yvel[16] = {0, 9, 17, 22, 24, 22, 17, 9, 0, -9, -17, -22, -24, -22, -17, -9};
   static const uint8 kMoldorm_NextDir[16] = {8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7};
 
+  Generic_PutInBottle(k, bottle_state_18_MiniMoldorm); //Pokemode
   Moldorm_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -8651,6 +8863,7 @@ void Sprite_12_Moblin(int k) {  // 8698e4
   static const uint8 kMoblin_Gfx[4] = {6, 4, 0, 2};
   int j;
   Moblin_Draw(k);
+  Generic_PutInBottle(k, bottle_state_12_Moblin); //Pokemode
   if (Sprite_ReturnIfInactive(k))
     return;
   if (Sprite_ReturnIfRecoiling(k))
@@ -8810,6 +9023,7 @@ void Sprite_0E_Snapdragon(int k) {  // 869c24
   static const int8 kSnapDragon_Xvel[8] = {8, -8, 8, -8, 16, -16, 16, -16};
   static const int8 kSnapDragon_Yvel[8] = {8, 8, -8, -8, 16, 16, -16, -16};
   int j;
+  Generic_PutInBottle(k, bottle_state_0E_Snapdragon); //Pokemode
   sprite_graphics[k] = sprite_B[k] + kSnapDragon_Gfx[sprite_D[k]];
   SnapDragon_Draw(k);
   if (Sprite_ReturnIfInactive(k))
@@ -8901,6 +9115,7 @@ void SnapDragon_Draw(int k) {  // 869e02
 
 void Sprite_22_Ropa(int k) {  // 869e1f
   Ropa_Draw(k);
+  Generic_PutInBottle(k, bottle_state_22_Ropa); //Pokemode
   if (Sprite_ReturnIfInactive(k))
     return;
   if (Sprite_ReturnIfRecoiling(k))
@@ -8954,6 +9169,7 @@ void Ropa_Draw(int k) {  // 869ee5
 
 void Sprite_11_Hinox(int k) {  // 869f05
   Hinox_Draw(k);
+  Generic_PutInBottle(k, bottle_state_11_Hinox); //Pokemode
   if (Sprite_ReturnIfInactive(k))
     return;
   if (sprite_F[k]) {
@@ -9111,6 +9327,7 @@ void Sprite_23_RedBari(int k) {  // 86a23d
   static const int8 kBari_Yvel2[16] = {-16, -14, -11, -8, 0, 8, 11, 14, 16, 14, 11, 8, 0, -9, -11, -14};
   static const uint8 kBari_Gfx[2] = {0, 3};
   int j;
+  Generic_PutInBottle(k, bottle_state_23_RedBari); //Pokemode
 
   if (sign8(sprite_C[k])) {
     if (sprite_head_dir[k] != 16) {
@@ -9234,6 +9451,7 @@ void Sprite_13_MiniHelmasaur(int k) {  // 86a409
   static const uint8 kHelmasaur_Gfx[8] = {3, 4, 3, 4, 2, 2, 5, 5};
   static const uint8 kHelmasaur_OamFlags[8] = {0x40, 0x40, 0, 0, 0, 0x40, 0x40, 0};
   int j = sprite_subtype2[k] >> 2 & 1 | sprite_D[k] << 1;
+  Generic_PutInBottle(k, bottle_state_13_MiniHelmasaur); //Pokemode
   sprite_graphics[k] = kHelmasaur_Gfx[j];
   sprite_oam_flags[k] = sprite_oam_flags[k] & ~0x40 | kHelmasaur_OamFlags[j];
   if (!((k ^ frame_counter) & 15)) {
@@ -9248,6 +9466,7 @@ void Sprite_13_MiniHelmasaur(int k) {  // 86a409
 }
 
 void Sprite_26_HardhatBeetle(int k) {  // 86a460
+  Generic_PutInBottle(k, bottle_state_26_HardhatBeetle);
   sprite_graphics[k] = sprite_subtype2[k] >> 2 & 1;
   HardHatBeetle_Draw(k);
   HelmasaurHardHatBeetleCommon(k);
@@ -9294,6 +9513,7 @@ void HardHatBeetle_Draw(int k) {  // 86a4f2
 
 void Sprite_15_Antifairy(int k) {  // 86a50c
   SpriteDraw_Antfairy(k);
+  Generic_PutInBottle(k, bottle_state_15_Antifairy); //Pokemode
   if (Sprite_ReturnIfInactive(k))
     return;
   if (Sprite_CheckDamageToLink(k) && sprite_delay_main[k] == 0) {
@@ -9310,6 +9530,7 @@ void Sprite_15_Antifairy(int k) {  // 86a50c
 }
 
 void Sprite_0B_Cucco(int k) {  // 86a5c2
+  Generic_PutInBottle(k, bottle_state_0B_Cucco); //Pokemode
   if (sprite_x_vel[k] != 0)
     sprite_oam_flags[k] = sprite_oam_flags[k] & ~0x40 | (sign8(sprite_x_vel[k]) ? 0 : 0x40);
 
@@ -9468,6 +9689,7 @@ void BawkBawk(int k) {  // 86a84c
 }
 
 void Sprite_17_Hoarder(int k) {  // 86a86c
+    Generic_PutInBottle(k, bottle_state_17_Hoarder); //Pokemode
   if (sprite_ai_state[k])
     Sprite_Hoarder_Frantic(k);
   else
@@ -9600,6 +9822,7 @@ void CoveredRupeeCrab_Draw(int k) {  // 86aa48
 }
 
 void Sprite_EC_ThrownItem(int k) {  // 86aae0
+  Generic_PutInBottle(k, bottle_state_EC_ThrownItem); //Pokemode
   if (byte_7E0FC6 < 3) {
     if (sort_sprites_setting && sprite_floor[k]) {
       int spr_slot = 0x2c + (k & 3);
@@ -9693,6 +9916,7 @@ void Sprite_TransmuteToBomb(int k) {  // 86ad50
 }
 
 void Sprite_28_DarkWorldHintNPC(int k) {  // 86ad6f
+  Generic_PutInBottle(k, bottle_state_28_DarkWorldHintNPC); //Pokemode
   StoryTeller_1_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -9814,6 +10038,7 @@ void StoryTeller_1_Draw(int k) {  // 86af1a
 }
 
 void Sprite_2E_FluteKid(int k) {  // 86af3b
+  Generic_PutInBottle(k, bottle_state_2E_FluteKid); //Pokemode
   switch (sprite_head_dir[k]) {
   case 0:
     switch (sprite_subtype2[k]) {
@@ -9919,7 +10144,7 @@ void Sprite_FluteKid_Stumpy(int k) {  // 86b040
     break;
   case 2:  // grant shovel
     item_receipt_method = 0;
-    Link_ReceiveItem(0x13, 0);
+    Link_ReceiveItem(receiveitem_index_shovel, 0);
     sprite_ai_state[k] = 0;
     break;
   case 3:  // wait for music
@@ -9979,6 +10204,7 @@ void FluteKid_SpawnQuaver(int k) {  // 86b1a5
 }
 
 void Sprite_1A_Smithy(int k) {  // 86b1ee
+  Generic_PutInBottle(k, bottle_state_1A_Smithy); //Pokemode
   switch (sprite_subtype2[k]) {
   case 0: Smithy_Main(k); break;
   case 1: Smithy_Spark(k); break;
@@ -10038,7 +10264,7 @@ void Smithy_Frog(int k) {  // 86b274
     if (Sprite_ShowSolicitedMessage(k, 0xe1) & 0x100)
       sprite_ai_state[k] = 1;
   } else {
-    follower_indicator = 7;
+    follower_indicator = follower_indicator_Smithy_Frog;
     LoadFollowerGraphics();
     Sprite_BecomeFollower(k);  // zelda bug: doesn't save X
     sprite_state[k] = 0;
@@ -10103,7 +10329,7 @@ void Smithy_Main(int k) {  // 86b34e
   switch(sprite_ai_state[k]) {
   case 0:  // ConversationStart
     sprite_C[k] = 0;
-    if (follower_indicator != 8) {
+    if (follower_indicator != follower_indicator_Smith) {
       if (Smithy_ListenForHammer(k)) {
         Sprite_ShowMessageUnconditional(0xe4);
         sprite_delay_aux1[k] = 96;
@@ -10181,7 +10407,7 @@ void Smithy_Main(int k) {  // 86b34e
     sprite_ai_state[k] = 0;
     sprite_ai_state[sprite_E[k]] = 0;
     item_receipt_method = 0;
-    Link_ReceiveItem(2, 0);
+    Link_ReceiveItem(receiveitem_index_tempered_sword, 0);
     sram_progress_indicator_3 &= ~0x80;
     break;
   case 7:  //
@@ -10198,7 +10424,7 @@ void Smithy_Main(int k) {  // 86b34e
       sprite_ignore_projectile[j] = 3;
     }
     sprite_ai_state[k] = 11;
-    follower_indicator = 0;
+    follower_indicator = follower_indicator_noone;
     sprite_graphics[k] = 4;
     break;
   }
@@ -10210,7 +10436,7 @@ void Smithy_Main(int k) {  // 86b34e
 }
 
 bool Smithy_ListenForHammer(int k) {  // 86b43d
-  return sprite_delay_aux1[k] == 0 && hud_cur_item == kHudItem_Hammer && (link_item_in_hand & 2) && player_handler_timer == 2 && Sprite_CheckDamageToLink_same_layer(k);
+  return sprite_delay_aux1[k] == 0 && hud_cur_item == kHudItem_Hammer && (link_item_in_hand & item_in_hand_hammer) && player_handler_timer == 2 && Sprite_CheckDamageToLink_same_layer(k);
 }
 
 int Smithy_SpawnDwarfPal(int k) {  // 86b5a6
@@ -10303,6 +10529,7 @@ void Sprite_1B_Arrow(int k) {  // 86b754
   static const int8 kEnemyArrow_Xvel[8] = {0, 0, 16, 16, 0, 0, -16, -16};
   static const int8 kEnemyArrow_Yvel[8] = {16, 16, 0, 0, -16, -16, 0, 0};
   static const uint8 kEnemyArrow_Dirs[4] = {0, 2, 1, 3};
+  Generic_PutInBottle(k, bottle_state_1B_Arrow); //Pokemode
 
   EnemyArrow_Draw(k);
   if (Sprite_ReturnIfPaused(k))
@@ -10379,8 +10606,8 @@ void Sprite_1E_CrystalSwitch(int k) {  // 86b8d0
   sprite_oam_flags[k] = sprite_oam_flags[k] & ~0xe | kCrystalSwitchPal[orange_blue_barrier_state & 1];
   Oam_AllocateDeferToPlayer(k);
   SpriteDraw_SingleLarge(k);
-  if (Sprite_ReturnIfInactive(k))
-    return;
+  if (Sprite_ReturnIfInactive(k)){
+    return;}
   if (Sprite_CheckDamageToLink_same_layer(k)) {
     Sprite_NullifyHookshotDrag();
     link_speed_setting = 0;
@@ -10389,6 +10616,7 @@ void Sprite_1E_CrystalSwitch(int k) {  // 86b8d0
   if (sprite_delay_main[k] == 0) {
     Sprite_GarnishSpawn_Sparkle(k, frame_counter & 7, GetRandomNumber() & 7);
     sprite_delay_main[k] = 31;
+    Generic_PutInBottle(k, bottle_state_1E_CrystalSwitch); //Pokemode
   }
   if (sprite_F[k] == 0) {
     if (sign8(button_b_frames - 9))
@@ -10401,6 +10629,7 @@ void Sprite_1E_CrystalSwitch(int k) {  // 86b8d0
 }
 
 void Sprite_1F_SickKid(int k) {  // 86b94c
+  Generic_PutInBottle(k, bottle_state_1F_SickKid); //Pokemode
   static const int8 kBugNetKid_Gfx[8] = {0, 1, 0, 1, 0, 1, 2, -1};
   static const uint8 kBugNetKid_Delay[7] = {8, 12, 8, 12, 8, 96, 16};
   int j;
@@ -10431,9 +10660,9 @@ void Sprite_1F_SickKid(int k) {  // 86b94c
       sprite_ai_state[k] = 2;
     }
     break;
-  case 2:  // grant
+  case 2:  // grant bug net
     item_receipt_method = 0;
-    Link_ReceiveItem(0x21, 0);
+    Link_ReceiveItem(receiveitem_index_bug_net, 0);
     flag_is_link_immobilized = 0;
     sprite_ai_state[k] = 3;
     break;
@@ -10446,6 +10675,7 @@ void Sprite_1F_SickKid(int k) {  // 86b94c
 
 void Sprite_21_WaterSwitch(int k) {  // 86b9fa
   PushSwitch_Draw(k);
+  Generic_PutInBottle(k, bottle_state_21_WaterSwitch); //Pokemode
   if (Sprite_ReturnIfInactive(k))
     return;
   switch(sprite_ai_state[k]) {
@@ -10596,6 +10826,7 @@ void PushSwitch_Draw(int k) {  // 86bb22
 }
 
 void Sprite_39_Locksmith(int k) {  // 86bcac
+  Generic_PutInBottle(k, bottle_state_39_Locksmith); //Pokemode
   uint8 bak;
   int j;
 
@@ -10614,13 +10845,13 @@ void Sprite_39_Locksmith(int k) {  // 86bcac
     sprite_y_vel[k] = 1;
     if (!Sprite_CheckTileCollision(k)) {
       sprite_ai_state[k]++;
-      if (follower_indicator != 0)
+      if (follower_indicator != follower_indicator_noone)
         sprite_ai_state[k] = 5;
     }
     sprite_x_lo[k] = bak;
     break;
   case 1:  // transition to tagalong
-    follower_indicator = 9;
+    follower_indicator = follower_indicator_LockSmith;
     tagalong_var5 = 0;
     LoadFollowerGraphics();
     Follower_Initialize();
@@ -10645,10 +10876,10 @@ void Sprite_39_Locksmith(int k) {  // 86bcac
         sprite_ai_state[k] = 2;
       } else {
         item_receipt_method = 0;
-        Link_ReceiveItem(0x16, 0);
+        Link_ReceiveItem(receiveitem_index_bottle, 0);
         sram_progress_indicator_3 |= 0x10;
         sprite_ai_state[k] = 4;
-        follower_indicator = 0;
+        follower_indicator = follower_indicator_noone;
       }
     } else {
       Sprite_ShowMessageUnconditional(0x10a);
@@ -10678,15 +10909,19 @@ void Sprite_2B_Hobo(int k) {  // 86bdc1
   switch (sprite_subtype2[k]) {
   case 0:
     Sprite_Hobo_Bum(k);
+    Generic_PutInBottle(k, bottle_state_2B_Hobo); //Pokemode
     break;
   case 1:
     Sprite_Hobo_Bubble(k);
+    Generic_PutInBottle(k, bottle_state_2B_Hobo); //Pokemode
     break;
   case 2:
     Sprite_Hobo_Fire(k);
+    Generic_PutInBottle(k, bottle_state_2B_Hobo); //Pokemode
     break;
   case 3:
     Sprite_Hobo_Smoke(k);
+    Generic_PutInBottle(k, bottle_state_2B_Hobo); //Pokemode
     break;
   }
 }
@@ -10735,7 +10970,7 @@ void Sprite_Hobo_Bum(int k) {  // 86bdd0
     sprite_graphics[k] = 1;
     save_ow_event_info[BYTE(overworld_screen_index)] |= 0x20;
     item_receipt_method = 0;
-    Link_ReceiveItem(0x16, 0);
+    Link_ReceiveItem(receiveitem_index_bottle, 0);
     sram_progress_indicator_3 |= 1;
     break;
   case 3:  // back to sleep
@@ -10843,6 +11078,7 @@ void Hobo_SpawnSmoke(int k) {  // 86bfaf
 }
 
 void Sprite_73_UncleAndPriest(int k) {  // 86bfe0
+  Generic_PutInBottle(k, bottle_state_73_UncleAndPriest); //Pokemode
   switch (sprite_E[k]) {
   case 0:
     Sprite_Uncle(k);
@@ -10875,7 +11111,7 @@ void SpritePrep_UncleAndPriest_bounce(int k) {  // 86bfe5
       j = 0;
     } else {
       sprite_D[k] = sprite_head_dir[k] = Sprite_DirectionToFaceLink(k, NULL) ^ 3;
-      if (follower_indicator == 1) {
+      if (follower_indicator == follower_indicator_Zelda) {
         sram_progress_flags |= 0x4;
         save_ow_event_info[0x1b] |= 0x20;
         sprite_delay_main[k] = 170;
@@ -10911,12 +11147,12 @@ void SpritePrep_OldMan_bounce(int k) {  // 86bff9
     sprite_subtype2[k] = 2;
     return;
   }
-  if (follower_indicator == 0) {
+  if (follower_indicator == follower_indicator_noone) {
     if (link_item_mirror == 2)
       sprite_state[k] = 0;
-    follower_indicator = 4;
+    follower_indicator = follower_indicator_OldMan;
     LoadFollowerGraphics();
-    follower_indicator = 0;
+    follower_indicator = follower_indicator_noone;
   } else {
     sprite_state[k] = 0;
     LoadFollowerGraphics();
@@ -10957,6 +11193,7 @@ void Sprite_TutorialGuardOrBarrier(int k) {  // 86bffe
 }
 
 void Sprite_F2_MedallionTablet(int k) {  // 86c00d
+  Generic_PutInBottle(k, bottle_state_F2_MedallionTablet); //Pokemode
   switch (sprite_subtype2[k]) {
   case 0:
     MedallionTablet_Main(k);
@@ -10969,6 +11206,7 @@ void Sprite_F2_MedallionTablet(int k) {  // 86c00d
 
 void Sprite_33_RupeePull(int k) {  // 86c017
   PrepOamCoordsRet info;
+  Generic_PutInBottle(k, bottle_state_33_RupeePull); //Pokemode
   Sprite_PrepOamCoord(k, &info);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -10991,6 +11229,7 @@ void Sprite_33_RupeePull(int k) {  // 86c017
 
 void Sprite_14_ThievesTownGrate(int k) {  // 86c01c
   PrepOamCoordsRet info;
+  Generic_PutInBottle(k, bottle_state_14_ThievesTownGrate); //Pokemode
   Sprite_PrepOamCoord(k, &info);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -11023,6 +11262,7 @@ void SpritePrep_Snitch_bounce_3(int k) {  // 86c030
 }
 
 void Sprite_37_Waterfall(int k) {  // 86c03a
+  Generic_PutInBottle(k, bottle_state_37_Waterfall); //Pokemode
   switch (sprite_subtype2[k]) {
   case 0: Waterfall(k); break;
   case 1: Sprite_BatCrash(k); break;
@@ -11030,6 +11270,7 @@ void Sprite_37_Waterfall(int k) {  // 86c03a
 }
 
 void Sprite_38_EyeStatue(int k) {  // 86c03f
+  Generic_PutInBottle(k, bottle_state_38_EyeStatue); //Pokemode
   if (!sprite_B[k]) {
     PrepOamCoordsRet info;
     Sprite_PrepOamCoord(k, &info);
@@ -11043,6 +11284,7 @@ void Sprite_38_EyeStatue(int k) {  // 86c03f
 }
 
 void Sprite_3A_MagicBat(int k) {  // 86c044
+  Generic_PutInBottle(k, bottle_state_3A_MagicBat); //Pokemode
   if (sprite_head_dir[k]) {
     Sprite_MadBatterBolt(k);
     return;
@@ -11128,10 +11370,10 @@ void SpritePrep_Zelda_bounce(int k) {  // 86c06c
   }
   sprite_ignore_projectile[k]++;
   sprite_D[k] = sprite_head_dir[k] = Sprite_DirectionToFaceLink(k, NULL) ^ 3;
-  uint8 bak0 = follower_indicator;
-  follower_indicator = 1;
+  uint8 bakup_follower_indicator = follower_indicator;
+  follower_indicator = follower_indicator_Zelda;
   LoadFollowerGraphics();
-  follower_indicator = bak0;
+  follower_indicator = bakup_follower_indicator;
 
   if (BYTE(dungeon_room_index) == 0x12) {
     sprite_subtype2[k] = 2;
@@ -11144,12 +11386,13 @@ void SpritePrep_Zelda_bounce(int k) {  // 86c06c
     }
   } else {
     sprite_subtype2[k] = 0;
-    if (follower_indicator == 1 || (sram_progress_flags & 4))
+    if (follower_indicator == follower_indicator_Zelda || (sram_progress_flags & 4))
       sprite_state[k] = 0;
   }
 }
 
 void Sprite_78_MrsSahasrahla(int k) {  // 86c071
+  Generic_PutInBottle(k, bottle_state_78_MrsSahasrahla); //Pokemode
   ElderWife_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -11185,6 +11428,7 @@ void Sprite_78_MrsSahasrahla(int k) {  // 86c071
 
 void Sprite_16_Elder_bounce(int k) {  // 86c08a
   Elder_Draw(k);
+  Generic_PutInBottle(k, bottle_state_16_Elder_bounce); //Pokemode
   if (Sprite_ReturnIfInactive(k))
     return;
   Sprite_BehaveAsBarrier(k);
@@ -11203,13 +11447,19 @@ void SpritePrep_HeartPiece(int k) {  // 86c0a8
 }
 
 void Sprite_2D_TelepathicTile(int k) {  // 86c0b2
+  Generic_PutInBottle(k, bottle_state_2D_TelepathicTile); //Pokemode
   assert(0);
 }
 
 void Sprite_25_TalkingTree(int k) {  // 86c0d5
   switch (sprite_subtype2[k]) {
-  case 0: TalkingTree_Mouth(k); break;
-  case 1: TalkingTree_Eye(k); break;
+  case 0: {
+      Generic_PutInBottle(k, bottle_state_25_TalkingTree); //Pokemode
+      TalkingTree_Mouth(k);
+      break;}
+  case 1: {
+      Generic_PutInBottle(k,bottle_state_D4_Landmine); //Pokemode (freezes the game?)
+      TalkingTree_Eye(k); break;}
   }
 }
 
@@ -11218,6 +11468,7 @@ void Sprite_1C_Statue(int k) {  // 86c0e8
   static const uint8 kMovableStatue_Joypad[4] = {1, 2, 4, 8};
   static const int8 kMovableStatue_Xvel[4] = {-16, 16, 0, 0};
   static const int8 kMovableStatue_Yvel[4] = {0, 0, -16, 16};
+  Generic_PutInBottle(k, bottle_state_1C_Statue); //Pokemode
   int j;
   if (sprite_D[k]) {
     sprite_D[k] = 0;
@@ -11322,6 +11573,7 @@ void Statue_BlockSprites(int k) {  // 86c277
 
 void Sprite_1D_FluteQuest(int k) {  // 86c2e5
   PrepOamCoordsRet info;
+  Generic_PutInBottle(k, bottle_state_1D_FluteQuest); //Pokemode
   Sprite_PrepOamCoord(k, &info);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -11335,6 +11587,7 @@ void Sprite_1D_FluteQuest(int k) {  // 86c2e5
 }
 
 void Sprite_72_FairyPond(int k) {  // 86c319
+  Generic_PutInBottle(k, bottle_state_72_FairyPond); //Pokemode
   if (sprite_A[k]) {
     if (!--sprite_C[k])
       sprite_state[k] = 0;
@@ -11626,6 +11879,7 @@ void FaerieQueen_Draw(int k) {  // 86cb26
 }
 
 void Sprite_71_Leever(int k) {  // 86cba2
+  Generic_PutInBottle(k, bottle_state_71_Leever); //Pokemode
   static const uint8 kLeever_EmergeGfx[16] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 2, 1, 2, 1, 0, 0};
   static const uint8 kLeever_AttackGfx[4] = {9, 10, 11, 12};
   static const uint8 kLeever_AttackSpd[2] = {12, 8};
@@ -11742,6 +11996,7 @@ void Leever_Draw(int k) {  // 86ce45
 }
 
 void Sprite_D8_Heart(int k) {  // 86cec0
+  Generic_PutInBottle(k, bottle_state_D8_Heart); //Pokemode
   if (SpriteDraw_AbsorbableTransient(k, true))
     return;
   if (Sprite_ReturnIfInactive(k))
@@ -11814,8 +12069,8 @@ void Sprite_E3_Fairy(int k) {  // 86cf94
     if (!sprite_delay_aux4[k]) {
       if (Sprite_CheckDamageToLink(k)) {
         Sprite_HandleAbsorptionByPlayer(k);
-      } else if (Sprite_CheckDamageFromLink(k) & kCheckDamageFromPlayer_Ne) {
-        sprite_ai_state[k]++;
+      } else if (Sprite_CheckDamageFromLink(k) & kCheckDamageFromPlayer_Net) {
+        sprite_ai_state[k]++; //set in capture state: sprite_ai_state[k]=1;
         Sprite_ShowMessageUnconditional(0xc9);
         return;
       }
@@ -11828,16 +12083,16 @@ void Sprite_E3_Fairy(int k) {  // 86cf94
       return;
     Faerie_HandleMovement(k);
     break;
-  case 1: // capture
-    if (choice_in_multiselect_box == 0) {
+  case 1: // capture: "catching fairy, faery"
+    if (choice_in_multiselect_box == 0) { //Player choses to capture
       int j = Sprite_Find_EmptyBottle();
-      if (j >= 0) {
-        link_bottle_info[j] = 6;
+      if (j >= 0) { //Empty bottle found
+        link_bottle_info[j] = bottle_state_fairy; // =6
         Hud_RefreshIcon();
-        sprite_state[k] = 0;
+        sprite_state[k] = 0; // inactivate sprite
         return;
       }
-      Sprite_ShowMessageUnconditional(0xca);
+      Sprite_ShowMessageUnconditional(0xca); // "You have no choice. Just set it free."
     }
     sprite_delay_aux4[k] = 48;
     sprite_ai_state[k] = 0;
@@ -11851,6 +12106,7 @@ void Fairy_CheckIfTouchable(int k) {  // 86d011
 }
 
 void Sprite_E4_SmallKey(int k) {  // 86d032
+  Generic_PutInBottle(k, bottle_state_E4_SmallKey); //Pokemode
   if (dung_savegame_state_bits & (kAbsorbBigKey[sprite_die_action[k]] << 8)) {
     sprite_state[k] = 0;
     return;
@@ -11862,6 +12118,63 @@ void Sprite_E4_SmallKey(int k) {  // 86d032
 }
 
 void Sprite_D9_GreenRupee(int k) {  // 86d04a
+  if (enhanced_features0 & kFeatures0_Pokemode){
+    int t = sprite_type[k] - 0xd8;
+    switch(t) {
+    case 0:
+//      link_hearts_filler += 8;
+      break;
+    case 1:
+        Generic_PutInBottle(k, bottle_state_D9_GreenRupee); //Pokemode
+      break;
+    case 2:
+        Generic_PutInBottle(k, bottle_state_DA_BlueRupee); //Pokemode
+      break;
+    case 3:
+        Generic_PutInBottle(k, bottle_state_DB_RedRupee); //Pokemode
+      break;
+    case 4:
+        Generic_PutInBottle(k, bottle_state_DC_1Bomb); //Pokemode
+      break;
+    case 5:
+        Generic_PutInBottle(k, bottle_state_DD_4Bombs); //Pokemode
+      break;
+    case 6:
+        Generic_PutInBottle(k, bottle_state_DE_8Bombs); //Pokemode
+      break;
+    case 7:
+        Generic_PutInBottle(k, bottle_state_DF_SmallMagicFiller); //Pokemode
+      break;
+    case 8:
+        Generic_PutInBottle(k, bottle_state_E0_BigMagicFiller); //Pokemode
+      break;
+    case 9:
+        Generic_PutInBottle(k, bottle_state_E1_5Arrows); //Pokemode
+      break;
+    case 10:
+        Generic_PutInBottle(k, bottle_state_E2_10Arrows); //Pokemode
+      break;
+    case 11:
+//      SpriteSfx_QueueSfx2WithPan(k, 0x31);
+//      link_hearts_filler += 56;
+      break;
+    case 12:
+        Generic_PutInBottle(k, bottle_state_E4_SmallKey); //Pokemode
+    case 13:
+        Generic_PutInBottle(k, bottle_state_E5_BigKey); //Pokemode
+      break;
+    case 14:
+        Generic_PutInBottle(k, bottle_state_E6_CollectableShield); //Pokemode
+//      link_shield_type = sprite_subtype[k];
+//      // Shield needs to have the right palette after pikit
+//      if (enhanced_features0 & kFeatures0_MiscBugFixes)
+//        Palette_Load_Shield();
+      break;
+    }
+  }
+
+
+
   Sprite_DrawRippleIfInWater(k);
   if (SpriteDraw_AbsorbableTransient(k, true))
     return;
@@ -11918,6 +12231,7 @@ void Sprite_08_Octorok(int k) {  // 86d377
   static const int8 kOctorock_Yvel[4] = {0, 0, 24, -24};
   static const uint8 kOctorock_OamFlags[4] = {0x40, 0, 0, 0};
 
+  Generic_PutInBottle(k, bottle_state_08_Octorok); //Pokemode
   int j = sprite_D[k];
   if (sprite_delay_aux1[k])
     sprite_D[k] = kOctorock_Dir[j];
@@ -12012,6 +12326,7 @@ void Octorock_Draw(int k) {  // 86d54a
 }
 
 void Sprite_0C_OctorokStone(int k) {  // 86d5b9
+  Generic_PutInBottle(k, bottle_state_0C_OctorokStone); //Pokemode
   if (sprite_state[k] == 6) {
     SpriteDraw_OctorokStoneCrumbling(k);
     if (Sprite_ReturnIfPaused(k))
@@ -12049,6 +12364,7 @@ void SpriteDraw_OctorokStoneCrumbling(int k) {  // 86d643
 
 void Sprite_0F_Octoballoon(int k) {  // 86d6aa
   static const uint8 kSprite_Octoballoon_Z[8] = {16, 17, 18, 19, 20, 19, 18, 17};
+  Generic_PutInBottle(k, bottle_state_0F_Octoballoon); //Pokemode
   sprite_z[k] = kSprite_Octoballoon_Z[sprite_subtype2[k] >> 3 & 7];
   Octoballoon_Draw(k);
   if (Sprite_ReturnIfInactive(k))
@@ -12130,6 +12446,7 @@ void Octoballoon_FormBabby(int k) {  // 86d80e
 }
 
 void Sprite_10_OctoballoonBaby(int k) {  // 86d853
+  Generic_PutInBottle(k, bottle_state_10_OctoballoonBaby); //Pokemode
   if (!sprite_subtype2[k])
     sprite_state[k] = 0;
   if (sprite_subtype2[k] >= 64 || !(sprite_subtype2[k] & 1))
@@ -12154,6 +12471,7 @@ void Sprite_10_OctoballoonBaby(int k) {  // 86d853
 void Sprite_0D_Buzzblob(int k) {  // 86d89a
   static const uint8 kBuzzBlob_Gfx[4] = {0, 1, 0, 2};
   static const uint8 kBuzzBlob_ObjPrio[4] = {10, 2, 8, 2};
+  Generic_PutInBottle(k, bottle_state_0D_Buzzblob); //Pokemode
   if (sprite_delay_aux1[k])
     sprite_obj_prio[k] = sprite_obj_prio[k] & 0xf1 | kBuzzBlob_ObjPrio[sprite_delay_aux1[k] >> 1 & 3];
   Sprite_Cukeman(k);
@@ -12208,7 +12526,7 @@ void BuzzBlob_Draw(int k) {  // 86d953
 void Sprite_02_StalfosHead(int k) {  // 86ddb7
   static const uint8 kStalfosHead_OamFlags[4] = {0, 0, 0, 0x40};
   static const uint8 kStalfosHead_Gfx[4] = {0, 1, 2, 1};
-
+  Generic_PutInBottle(k, bottle_state_02_StalfosHead); //Pokemode
   sprite_floor[k] = link_is_on_lower_level;
   if (sprite_delay_aux1[k])
     Oam_AllocateFromRegionC(8);
@@ -12621,11 +12939,15 @@ bool Probe_CheckTileSolidity(int k) {  // 8dc26e
   return kSprite_SimplifiedTileAttr[tiletype] >= 1;
 }
 
-void Sprite_HumanMulti_1(int k) {  // 8dc2d9
+void Sprite_29_HumanMulti_1(int k) {  // 8dc2d9
+
   switch (sprite_subtype2[k]) {
-  case 0: Sprite_FluteDad(k); break;
-  case 1: Sprite_ThiefHideoutGuy(k); break;
-  case 2: Sprite_BlindsHutGuy(k); break;
+  case 0: {Generic_PutInBottle(k, bottle_state_29_HumanMulti_1); //Pokemode
+      Sprite_FluteDad(k); break;}
+  case 1: {Generic_PutInBottle(k, bottle_state_29_HumanMulti_1); //Pokemode
+      Sprite_ThiefHideoutGuy(k); break;}
+  case 2: {Generic_PutInBottle(k, bottle_state_29_HumanMulti_1); //Pokemode
+      Sprite_BlindsHutGuy(k); break;}
   }
 
 }
@@ -12716,7 +13038,8 @@ void BlindHideoutGuy_Draw(int k) {  // 8dc481
   SpriteDraw_Shadow(k, &info);
 }
 
-void Sprite_SweepingLady(int k) {  // 8dc4ad
+void Sprite_2A_SweepingLady(int k) {  // 8dc4ad
+  Generic_PutInBottle(k, bottle_state_2A_SweepingLady); //Pokemode
   SweepingLady_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -12737,7 +13060,8 @@ void SweepingLady_Draw(int k) {  // 8dc4eb
   SpriteDraw_Shadow(k, &info);
 }
 
-void Sprite_Lumberjacks(int k) {  // 8dc51b
+void Sprite_2C_Lumberjacks(int k) {  // 8dc51b
+  Generic_PutInBottle(k, bottle_state_2C_Lumberjacks); //Pokemode
   static const uint16 kLumberJackMsg[4] = {0x12c, 0x12d, 0x12e, 0x12d};
   Lumberjacks_Draw(k);
   if (Sprite_ReturnIfInactive(k))
@@ -12802,15 +13126,17 @@ void Lumberjacks_Draw(int k) {  // 8dc6ba
   Sprite_DrawMultiple(k, &kLumberJacks_Dmd[sprite_graphics[k] * 11], 11, NULL);
 }
 
-void Sprite_FortuneTeller(int k) {  // 8dc762
+void Sprite_31_FortuneTeller(int k) {  // 8dc762
   switch (sprite_subtype2[k]) {
   case 0: // fortuneteller main
+    Generic_PutInBottle(k, bottle_state_31_FortuneTeller); //Pokemode
     FortuneTeller_Draw(k);
     if (Sprite_ReturnIfInactive(k))
       return;
     FortuneTeller_LightOrDarkWorld(k, savegame_is_darkworld >> 6 & 1);
     break;
-  case 1: // dwarf solidity
+  case 1: // dwarf solidity //=Cannot-move trap (ycar)
+    Generic_PutInBottle(k, bottle_state_31_FortuneTeller); //Pokemode
     if (Sprite_ReturnIfInactive(k))
       return;
     if (Sprite_CheckDamageToLink_same_layer(k)) {
@@ -12886,7 +13212,8 @@ void Smithy_SpawnDumbBarrierSprite(int k) {  // 8dcb2a
   sprite_ignore_projectile[j] = 1;
 }
 
-void Sprite_MazeGameLady(int k) {  // 8dcb5c
+void Sprite_2F_MazeGameLady(int k) {  // 8dcb5c
+  Generic_PutInBottle(k, bottle_state_2F_MazeGameLady); //Pokemode
   Lady_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -12923,7 +13250,8 @@ void Sprite_MazeGameLady(int k) {  // 8dcb5c
   }
 }
 
-void Sprite_MazeGameGuy(int k) {  // 8dcbf2
+void Sprite_30_MazeGameGuy(int k) {  // 8dcbf2
+  Generic_PutInBottle(k, bottle_state_30_MazeGameGuy); //Pokemode
   int j;
   MazeGameGuy_Draw(k);
   if (Sprite_ReturnIfInactive(k))
@@ -13857,6 +14185,7 @@ void Overworld_DrawWoodenDoor(uint16 pos, bool unlocked) {  // 9bc952
 }
 
 void Sprite_D4_Landmine(int k) {  // 9d8099
+  Generic_PutInBottle(k, bottle_state_D4_Landmine); //Pokemode
   static const uint8 kLandMine_OamFlags[4] = {4, 2, 8, 2};
 
   Landmine_Draw(k);
@@ -13899,6 +14228,7 @@ void Landmine_Draw(int k) {  // 9d810c
 }
 
 void Sprite_D3_Stal(int k) {  // 9d8129
+  Generic_PutInBottle(k, bottle_state_D3_Stal); //Pokemode
   static const uint8 kStal_Gfx[5] = {2, 2, 1, 0, 1};
   if (byte_7E0FC6 < 3) {
     if (!sprite_ai_state[k])
@@ -13966,6 +14296,7 @@ void Stal_Draw(int k) {  // 9d820c
 }
 
 void Sprite_D2_FloppingFish(int k) {  // 9d8235
+  Generic_PutInBottle(k, bottle_state_D2_FloppingFish); //Pokemode
   static const int8 kFish_Xvel[8] = {0, 12, 16, 12, 0, -12, -16, -12};
   static const int8 kFish_Yvel[8] = {-16, -12, 0, 12, 16, 12, 0, -12};
   static const uint8 kFish_Tab1[2] = {2, 0};
@@ -14117,6 +14448,7 @@ void ChimneySmoke_Draw(int k) {  // 9d8531
 }
 
 void Sprite_D1_BunnyBeam(int k) {  // 9d858b
+  Generic_PutInBottle(k, bottle_state_D1_BunnyBeam); //Pokemode
   if (player_is_indoors)
     Sprite_BunnyBeam(k);
   else
@@ -14207,6 +14539,7 @@ void Sprite_BunnyBeam(int k) {  // 9d85e0
 }
 
 void Sprite_D0_Lynel(int k) {  // 9d866a
+  Generic_PutInBottle(k, bottle_state_D0_Lynel); //Pokemode
   static const int8 kLynel_AttackGfx[4] = {5, 2, 8, 10};
   static const int8 kLynel_Gfx[8] = {3, 0, 6, 9, 4, 1, 7, 10};
   Lynel_Draw(k);
@@ -14597,6 +14930,7 @@ void Ganon_SpawnSpiralBat(int k) {  // 9d8e7c
 }
 
 void Sprite_D6_Ganon(int k) {  // 9d8eb4
+  Generic_PutInBottle(k, bottle_state_D6_Ganon); //Pokemode
   int j;
 
   if (sign8(sprite_ai_state[k])) {
@@ -15218,6 +15552,7 @@ void SpritePrep_Swamola_InitializeSegments(int k) {  // 9d9c80
 }
 
 void Sprite_CF_Swamola(int k) {  // 9d9cb0
+  Generic_PutInBottle(k, bottle_state_CF_Swamola); //Pokemode
   static const uint8 kSwamola_Target_Dir[8] = {1, 2, 3, 4, 5, 6, 7, 8};
   static const int8 kSwamola_Target_X[9] = {0, 0, 32, 32, 32, 0, -32, -32, -32};
   static const int8 kSwamola_Target_Y[9] = {0, -32, -32, 0, 32, 32, 32, 0, -32};
@@ -15372,7 +15707,7 @@ void Swamola_Draw(int k) {  // 9d9f64
 }
 
 void SpritePrep_Blind_PrepareBattle(int k) {  // 9da081
-  if (follower_indicator != 6 && dung_savegame_state_bits & 0x2000) {
+  if (follower_indicator != follower_indicator_BlindMaiden && dung_savegame_state_bits & 0x2000) {
     sprite_delay_aux2[k] = 96;
     sprite_C[k] = 1;
     sprite_D[k] = 2;
@@ -15467,6 +15802,7 @@ void Blind_SpawnHead(int k) {  // 9da1ed
 }
 
 void Sprite_CE_Blind(int k) {  // 9da263
+  Generic_PutInBottle(k, bottle_state_CE_Blind); //Pokemode
   if (sign8(sprite_A[k]))
     Sprite_BlindLaser(k);
   else if (sprite_A[k] == 2)
@@ -16164,6 +16500,7 @@ void Sprite_Trinexx_CheckDamageToFlashingSegment(int k) {  // 9db079
 }
 
 void Sprite_CB_TrinexxRockHead(int k) {  // 9db0ca
+  Generic_PutInBottle(k, bottle_state_CB_TrinexxRockHead); //Pokemode
   if (overlord_x_hi[0]) {
     Sprite_Trinexx_FinalPhase(k);
     return;
@@ -16722,6 +17059,7 @@ int Garnish_FlameTrail(int k, bool is_low) {  // 9dbde8
 }
 
 void Sprite_CA_ChainChomp(int k) {  // 9dbe7d
+  Generic_PutInBottle(k, bottle_state_CA_ChainChomp); //Pokemode
   ChainChomp_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -16868,6 +17206,7 @@ void ChainChomp_Draw(int k) {  // 9dc192
 }
 
 void Sprite_C9_Tektite(int k) {  // 9dc275
+  Generic_PutInBottle(k, bottle_state_C9_Tektite); //Pokemode
   int j = sprite_anim_clock[k];
   if (j) {
     sprite_ignore_projectile[k] = j;
@@ -16976,6 +17315,7 @@ void Tektite_Draw(int k) {  // 9dc3f5
 }
 
 void Sprite_C8_BigFairy(int k) {  // 9dc414
+  Generic_PutInBottle(k, bottle_state_C8_BigFairy); //Pokemode
   if (sprite_head_dir[k])
     Sprite_FairyCloud(k);
   else
@@ -17097,6 +17437,7 @@ void FaerieCloud_Draw(int k) {  // 9dc616
 }
 
 void Sprite_C7_Pokey(int k) {  // 9dc64f
+  Generic_PutInBottle(k, bottle_state_C7_Pokey); //Pokemode
   if (sprite_C[k]) {
     SpriteDraw_SingleLarge(k);
     if (Sprite_ReturnIfInactive(k))
@@ -17183,6 +17524,7 @@ void Hokbok_Draw(int k) {  // 9dc77d
 }
 
 void Sprite_C5_Medusa(int k) {  // 9dc7eb
+  Generic_PutInBottle(k, bottle_state_C5_Medusa); //Pokemode
   PrepOamCoordsRet info;
   Sprite_PrepOamCoord(k, &info);
   if (!player_is_indoors) {
@@ -17214,6 +17556,7 @@ void Sprite_C5_Medusa(int k) {  // 9dc7eb
 }
 
 void Sprite_C6_4WayShooter(int k) {  // 9dc869
+  Generic_PutInBottle(k, bottle_state_C6_4WayShooter); //Pokemode
   static const int8 kFireballJunction_X[4] = {12, -12, 0, 0};
   static const int8 kFireballJunction_Y[4] = {0, 0, 12, -12};
   static const int8 kFireballJunction_XYvel[6] = {0, 0, 40, -40, 0, 0};
@@ -17239,6 +17582,7 @@ void Sprite_C6_4WayShooter(int k) {  // 9dc869
 }
 
 void Sprite_C4_Thief(int k) {  // 9dc8d8
+  Generic_PutInBottle(k, bottle_state_C4_Thief); //Pokemode
   int j;
 
 
@@ -17445,6 +17789,7 @@ void Thief_Draw(int k) {  // 9dcc9e
 }
 
 void Sprite_C3_Gibo(int k) {  // 9dcce1
+  Generic_PutInBottle(k, bottle_state_C3_Gibo); //Pokemode
   if (sprite_B[k]) {
     SpriteDraw_SingleLarge(k);
     if (Sprite_ReturnIfInactive(k))
@@ -17463,7 +17808,7 @@ void Sprite_C3_Gibo(int k) {  // 9dcce1
   sprite_anim_clock[k]++;
   int j = sprite_head_dir[k], i;
   if (sprite_state[j] == 6) {
-    sprite_state[k] = sprite_state[j];
+    sprite_state[k] = sprite_state[j];//=6
     sprite_delay_main[k] = sprite_delay_main[j];
     sprite_flags2[k] += 4;
     return;
@@ -17581,6 +17926,7 @@ void Gibo_Draw(int k) {  // 9dcf5e
 }
 
 void Sprite_C2_Boulder(int k) {  // 9dcfcb
+  Generic_PutInBottle(k, bottle_state_C2_Boulder); //Pokemode
   if (!player_is_indoors) {
     Boulder_OutdoorsMain(k);
     return;
@@ -17675,6 +18021,7 @@ void CutsceneAgahnim_SpawnZeldaOnAltar(int k) {  // 9dd1fd
 }
 
 void Sprite_C1_CutsceneAgahnim(int k) {  // 9dd234
+  Generic_PutInBottle(k, bottle_state_C1_CutsceneAgahnim); //Pokemode
   switch (sprite_A[k]) {
   case 0: CutsceneAgahnim_Agahnim(k); break;
   case 1: Sprite_CutsceneAgahnim_Zelda(k); break;
@@ -18089,17 +18436,38 @@ void Vulture_Draw(int k) {  // 9ddd5e
 
 }
 
-void Sprite_Raven(int k) {  // 9ddd85
+//Pokemode:will attack enemies before going back to you
+void Friendly_Attacks_Enemies_BeeStyle(int k){
+    Point16U pt2;
+    if (!PlayerBee_FindTarget(k, &pt2)) {
+      pt2.x = link_x_coord + (GetRandomNumber() & 3) * 5;
+      pt2.y = link_y_coord + (GetRandomNumber() & 3) * 5;
+    }
+    if ((k ^ frame_counter) & 7)
+      return;
+    ProjectSpeedRet pt = Sprite_ProjectSpeedTowardsLocation(k, pt2.x, pt2.y, 32);
+    sprite_x_vel[k] = pt.x;
+    sprite_y_vel[k] = pt.y;
+}
+
+void FriendlyGuardAttack(int k, int j){
+
+}
+
+void Sprite_00_Raven(int k) {  // 9ddd85
   static const uint8 kRaven_AscendTime[2] = {16, 248};
   int j;
   bool fleeing = false;
+  Generic_PutInBottle(k, bottle_state_00_Raven); //Pokemode
   sprite_obj_prio[k] |= 0x30;
   SpriteDraw_SingleLarge(k);
   if (Sprite_ReturnIfInactive(k))
     return;
   if (Sprite_ReturnIfRecoiling(k))
     return;
-  Sprite_CheckDamageToAndFromLink(k);
+  if(sprite_ai_state[k]!=10){//Ycar
+    Sprite_CheckDamageToAndFromLink(k);
+  }
   Sprite_MoveXY(k);
   switch (sprite_ai_state[k]) {
   case 0: { // inwait
@@ -18142,7 +18510,14 @@ fly:
     sprite_oam_flags[k] = sprite_oam_flags[k] & ~0x40 | j * 0x40;
     break;
   case 3:  // flee
-    fleeing = true;
+    fleeing = true;//comment this for Raven stays around
+    goto fly;
+    break;
+
+  case 10:
+      //Sprite_BecomeFollower(k); //uncomment this to see Raven abducting follower
+    Sprite_SpawnSparkleGarnish(k);
+    Friendly_Attacks_Enemies_BeeStyle(k);
     goto fly;
   }
 }
@@ -18175,6 +18550,7 @@ void Vitreous_SpawnSmallerEyes(int k) {  // 9ddecb
 }
 
 void Sprite_C0_Catfish(int k) {  // 9ddf49
+  Generic_PutInBottle(k, bottle_state_C0_Catfish); //Pokemode
   if (sprite_A[k] & 0x80)
     Sprite_Catfish_SplashOfWater(k);
   else if (sprite_A[k] == 0)
@@ -18425,6 +18801,7 @@ void Sprite_Catfish_SplashOfWater(int k) {  // 9de37d
 }
 
 void Sprite_BF_Lightning(int k) {  // 9de3ed
+  Generic_PutInBottle(k, bottle_state_BF_Lightning); //Pokemode
   static const uint8 kSpriteLightning_Gfx[8] = {0, 1, 2, 3, 0, 1, 2, 3};
   static const uint8 kSpriteLightning_OamFlags[8] = {0, 0, 0, 0, 0x40, 0x40, 0x40, 0x40};
   static const int8 kSpriteLightning_Xoff[64] = {
@@ -18467,6 +18844,7 @@ void Lightning_SpawnGarnish(int k) {  // 9de475
 }
 
 void Sprite_BD_Vitreous(int k) {  // 9de4c8
+  Generic_PutInBottle(k, bottle_state_BD_Vitreous); //Pokemode
   if (sprite_delay_aux4[k])
     sprite_graphics[k] = 3;
   Vitreous_Draw(k);
@@ -18605,6 +18983,7 @@ void Vitreous_Draw(int k) {  // 9de716
 }
 
 void Sprite_BE_VitreousEye(int k) {  // 9de773
+  Generic_PutInBottle(k, bottle_state_BE_VitreousEye); //Pokemode
   static const int8 kSprite_Vitreolus_Dx[4] = {1, 0, -1, 0};
   static const int8 kSprite_Vitreolus_Dy[4] = {0, 1, 0, -1};
   int j = sprite_subtype2[k] >> 4 & 3;
@@ -19038,7 +19417,7 @@ void TalkingTree_Mouth(int k) {  // 9df956
       if (!(Sprite_ShowSolicitedMessage(k, kTalkingTree_Msgs2[j]) & 0x100))
         sprite_A[k] = 0;
     } else {
-      static const uint8 kTalkingTree_Msgs[4] = {0x7e, 0x7f, 0x80, 0x81};
+      static const uint8 kTalkingTree_Msgs[4] = {0x7e, 0x7f, 0x80, 0x81}; //cf dialogue.txt
       static const uint8 kTalkingTree_Screens[4] = {0x58, 0x5d, 0x72, 0x6b};
       j = FindInByteArray(kTalkingTree_Screens, BYTE(overworld_screen_index), 4);
       Sprite_ShowMessageUnconditional(kTalkingTree_Msgs[j]);
@@ -19154,6 +19533,7 @@ void RupeePull_SpawnPrize(int k) {  // 9dfbd7
 }
 
 void Sprite_D5_DigGameGuy(int k) {  // 9dfc38
+  Generic_PutInBottle(k, bottle_state_D5_DigGameGuy); //Pokemode
   DiggingGameGuy_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -19163,7 +19543,7 @@ void Sprite_D5_DigGameGuy(int k) {  // 9dfc38
   switch(sprite_ai_state[k]) {
   case 0:  // intro
     if ((uint8)(sprite_y_lo[k] + 7) < BYTE(link_y_coord) && Sprite_DirectionToFaceLink(k, NULL) == 2) {
-      if (follower_indicator == 0) {
+      if (follower_indicator == follower_indicator_noone) {
         if (Sprite_ShowSolicitedMessage(k, 0x187) & 0x100)
           sprite_ai_state[k]++;
       } else {
@@ -19291,6 +19671,7 @@ void HelmasaurKing_Reinitialize(int k) {  // 9e8019
 }
 
 void Sprite_92_HelmasaurKing(int k) {  // 9e8039
+  Generic_PutInBottle(k, bottle_state_92_HelmasaurKing); //Pokemode
   int t, j;
 
   if (sign8(sprite_C[k])) {
@@ -19482,7 +19863,7 @@ void HelmasaurKing_SwingTail(int k) {  // 9e82a0
 }
 
 void HelmasaurKing_CheckMaskDamageFromHammer(int k) {  // 9e8385
-  if (sprite_C[k] >= 3 || !(link_item_in_hand & 10) || (player_oam_y_offset == 0x80))
+  if (sprite_C[k] >= 3 || !(link_item_in_hand & 10) || (player_oam_y_offset == 0x80)) //return if 0xa not in hand
     return;
   SpriteHitBox hb;
   Player_SetupActionHitBox(&hb);
@@ -19791,6 +20172,7 @@ void Sprite_MadBatterBolt(int k) {  // 9e8a96
 }
 
 void Sprite_AA_Pikit(int k) {  // 9e8bbf
+  Generic_PutInBottle(k, bottle_state_AA_Pikit); //Pokemode
   static const uint8 kPikit_Gfx[24] = {
     2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
     3, 3, 3, 3, 2, 2, 2, 2,
@@ -19902,6 +20284,7 @@ void Sprite_AA_Pikit(int k) {  // 9e8bbf
 }
 
 void Sprite_A8_GreenZirro(int k) {  // 9e8dd2
+  Generic_PutInBottle(k, bottle_state_A8_GreenZirro); //Pokemode
   static const uint8 kBomber_Gfx[4] = {9, 10, 8, 7};
 
   sprite_obj_prio[k] = 0x30;
@@ -20055,6 +20438,7 @@ void StalfosBone_Draw(int k) {  // 9e9040
 }
 
 void Sprite_A7_Stalfos(int k) {  // 9e906c
+  Generic_PutInBottle(k, bottle_state_A7_Stalfos); //Pokemode
   if (sprite_A[k]) {
     Sprite_StalfosBone(k);
     return;
@@ -20111,7 +20495,7 @@ if_1:
   }
 endif_1:
   if (sprite_z[k] == 0) {
-    Sprite_Zazak_Main(k);
+    Sprite_A5_Zazak_Main(k);
     return;
   }
   sprite_graphics[k] = kStalfos_AnimState2[sprite_D[k]];
@@ -20141,7 +20525,8 @@ endif_1:
   }
 }
 
-void Sprite_Zazak_Main(int k) {  // 9e919f
+void Sprite_A5_Zazak_Main(int k) {  // 9e919f
+  Generic_PutInBottle(k, bottle_state_A5_Zazak); //Pokemode
   static const uint8 kStalfos_AnimState1[8] = {6, 4, 0, 2, 7, 5, 1, 3};
   static const uint8 kStalfos_Delay[4] = {16, 32, 64, 32};
 
@@ -20303,6 +20688,7 @@ void FirePhlegm_Draw(int k) {  // 9e9443
 }
 
 void Sprite_A3_KholdstareShell(int k) {  // 9e9460
+  Generic_PutInBottle(k, bottle_state_A3_KholdstareShell); //Pokemode
   if (Sprite_ReturnIfPaused(k))
     return;
   PointU8 pt;
@@ -20347,6 +20733,7 @@ void GenerateIceball(int k) {  // 9e94dd
 }
 
 void Sprite_A2_Kholdstare(int k) {  // 9e9518
+  Generic_PutInBottle(k, bottle_state_A2_Kholdstare); //Pokemode
   int j;
 
   Kholdstare_Draw(k);
@@ -20460,6 +20847,7 @@ void Kholdstare_SpawnPuffCloudGarnish(int k) {  // 9e96a5
 }
 
 void Sprite_A4_FallingIce(int k) {  // 9e9710
+  Generic_PutInBottle(k, bottle_state_A4_FallingIce); //Pokemode
   if (!sprite_C[k]) {
     if (Sprite_ReturnIfInactive(k))
       return;
@@ -20529,6 +20917,7 @@ void IceBall_Split(int k) {  // 9e97cf
 }
 
 void Sprite_A1_Freezor(int k) {  // 9e981d
+  Generic_PutInBottle(k, bottle_state_A1_Freezor); //Pokemode
   Freezor_Draw(k);
   if (sprite_state[k] != 9) {
     sprite_ai_state[k] = 3;
@@ -20602,6 +20991,7 @@ void Sprite_A1_Freezor(int k) {  // 9e981d
 }
 
 void Sprite_9E_HauntedGroveOstritch(int k) {  // 9e995b
+  Generic_PutInBottle(k, bottle_state_9E_HauntedGroveOstritch); //Pokemode
   static const uint8 kFluteBoyOstrich_Gfx[4] = {0, 1, 0, 2};
   FluteBoyOstrich_Draw(k);
   if (Sprite_ReturnIfInactive(k))
@@ -20656,6 +21046,7 @@ void FluteBoyOstrich_Draw(int k) {  // 9e9a4b
 }
 
 void Sprite_9F_HauntedGroveRabbit(int k) {  // 9e9a6d
+  Generic_PutInBottle(k, bottle_state_9F_HauntedGroveRabbit); //Pokemode
   sprite_oam_flags[k] = sprite_oam_flags[k] & ~0x40 | kFluteBoyAnimal_OamFlags[sprite_D[k]];
   SpriteDraw_SingleLarge(k);
   switch (sprite_ai_state[k]) {
@@ -20686,6 +21077,7 @@ void Sprite_9F_HauntedGroveRabbit(int k) {  // 9e9a6d
 }
 
 void Sprite_A0_HauntedGroveBird(int k) {  // 9e9aec
+  Generic_PutInBottle(k, bottle_state_A0_HauntedGroveBird); //Pokemode
   if (sprite_graphics[k] == 3)
     HauntedGroveBird_Blink(k);
   sprite_oam_flags[k] = sprite_oam_flags[k] & ~0x40 | kFluteBoyAnimal_OamFlags[sprite_D[k]];
@@ -20739,6 +21131,7 @@ void HauntedGroveBird_Blink(int k) {  // 9e9b9c
 }
 
 void Sprite_9C_Zoro(int k) {  // 9e9bc8
+  Generic_PutInBottle(k, bottle_state_9C_Zoro); //Pokemode
   if (sprite_E[k])
     Zoro(k);
   else
@@ -20829,6 +21222,7 @@ void Babasu(int k) {  // 9e9c6b
 }
 
 void Sprite_9B_Wizzrobe(int k) {  // 9e9d1b
+  Generic_PutInBottle(k, bottle_state_9B_Wizzrobe); //Pokemode
   int j;
   if (sprite_C[k]) {
     Sprite_Wizzbeam(k);
@@ -20914,6 +21308,9 @@ void Wizzrobe_FireBeam(int k) {  // 9e9e15
 }
 
 void Sprite_9A_Kyameron(int k) {  // 9e9e7b
+  if (!sprite_delay_main[k]){ //Condition Needed in Pokemode to avoid freezing when hitting Kyameron
+    Generic_PutInBottle(k, bottle_state_9A_Kyameron);//Pokemode
+  }
   PrepOamCoordsRet info;
   if (!sprite_ai_state[k])
     Sprite_PrepOamCoord(k, &info);
@@ -21050,6 +21447,7 @@ void Kyameron_Draw(int k) {  // 9ea158
 }
 
 void Sprite_99_Pengator(int k) {  // 9ea196
+  Generic_PutInBottle(k, bottle_state_99_Pengator); //Pokemode
   static const uint8 kPengator_Gfx[4] = {5, 0, 10, 15};
   sprite_graphics[k] = sprite_A[k] + kPengator_Gfx[sprite_D[k]];
   Pengator_Draw(k);
@@ -21198,6 +21596,7 @@ void LaserBeam_BuildUpGarnish(int k) {  // 9ea488
 }
 
 void Sprite_95_LaserEyeLeft(int k) {  // 9ea541
+  Generic_PutInBottle(k, bottle_state_95_LaserEyeLeft); //Pokemode
   static const uint8 kLaserEye_Dirs[4] = {2, 3, 0, 1};
   if (sprite_A[k]) {
     Sprite_LaserBeam(k);
@@ -21289,6 +21688,7 @@ void LaserEye_Draw(int k) {  // 9ea708
 }
 
 void Sprite_94_Pirogusu(int k) {  // 9ea742
+  Generic_PutInBottle(k, bottle_state_94_Pirogusu); //Pokemode
   static const uint8 kPirogusu_A0[4] = {2, 3, 0, 1};
   static const uint8 kPirogusu_A1[8] = {9, 11, 5, 7, 5, 11, 7, 9};
   static const uint8 kPirogusu_A2[8] = {16, 17, 18, 19, 12, 13, 14, 15};
@@ -21400,6 +21800,7 @@ void Pirogusu_Draw(int k) {  // 9ea93b
 }
 
 void Sprite_93_Bumper(int k) {  // 9ea982
+  Generic_PutInBottle(k, bottle_state_93_Bumper); //Pokemode
   static const int8 kBumper_Vels[4] = { 0, 2, -2, 0 };
   Bumper_Draw(k);
   if (Sprite_ReturnIfInactive(k))
@@ -21447,6 +21848,7 @@ void Bumper_Draw(int k) {  // 9eaa8b
 }
 
 void Sprite_91_StalfosKnight(int k) {  // 9eaaa7
+  Generic_PutInBottle(k, bottle_state_91_StalfosKnight); //Pokemode
   int j;
   if (!sprite_ai_state[k]) {
     PrepOamCoordsRet info;
@@ -21664,6 +22066,7 @@ void SpriteDraw_StalfosKnight_Head(int k, PrepOamCoordsRet *info) {  // 9eae4e
 }
 
 void Sprite_90_Wallmaster(int k) {  // 9eaea4
+  Generic_PutInBottle(k, bottle_state_90_Wallmaster); //Pokemode
   sprite_obj_prio[k] |= 0x30;
   WallMaster_Draw(k);
   if (sprite_state[k] != 9) {
@@ -21744,6 +22147,7 @@ void WallMaster_Draw(int k) {  // 9eafe4
 }
 
 void Sprite_8F_Blob(int k) {  // 9eb002
+  Generic_PutInBottle(k, bottle_state_8F_Blob); //Pokemode
   if (sprite_state[k] == 9 && sprite_E[k]) {
     sprite_E[k] = 0;
     sprite_x_vel[k] = 1;
@@ -21888,6 +22292,7 @@ void Zol_Draw(int k) {  // 9eb1c5
 }
 
 void Sprite_8E_Terrorpin(int k) {  // 9eb26f
+  Generic_PutInBottle(k, bottle_state_8E_Terrorpin); //Pokemode
   int j;
   static const int8 kTerrorpin_Xvel[8] = {8, -8, 0, 0, 12, -12, 0, 0};
   static const int8 kTerrorpin_Yvel[8] = {0, 0, 8, -8, 0, 0, 12, -12};
@@ -21957,7 +22362,7 @@ void Terrorpin_CheckForHammer(int k) {  // 9eb3a3
   if (!(sprite_z[k] | sprite_delay_aux2[k]) &&
       sprite_floor[k] == link_is_on_lower_level &&
       player_oam_y_offset != 0x80 &&
-      link_item_in_hand & 0xa) {
+      link_item_in_hand & 0xa) { //if 0xa in hand
     SpriteHitBox hb;
     Player_SetupActionHitBox(&hb);
     Terrorpin_SetUpHammerHitBox(k, &hb);
@@ -21985,6 +22390,7 @@ void Terrorpin_SetUpHammerHitBox(int k, SpriteHitBox *hb) {  // 9eb405
 }
 
 void Sprite_8C_Arrghus(int k) {  // 9eb433
+  Generic_PutInBottle(k, bottle_state_8C_Arrghus); //Pokemode
   static const uint8 kArrghus_Gfx[9] = {1, 1, 1, 2, 2, 1, 1, 0, 0};
   sprite_obj_prio[k] |= 0x30;
   Arrghus_Draw(k);
@@ -22191,6 +22597,7 @@ void Arrghus_HandlePuffs(int k) {  // 9eb8b4
 }
 
 void Sprite_8D_Arrghi(int k) {  // 9eb8c4
+  Generic_PutInBottle(k, bottle_state_8D_Arrghi); //Pokemode
   static const uint8 kArrgi_Gfx[8] = {0, 1, 2, 2, 2, 2, 2, 1};
 
   sprite_obj_prio[k] |= 0x30;
@@ -22241,6 +22648,7 @@ void Sprite_8D_Arrghi(int k) {  // 9eb8c4
 }
 
 void Sprite_8B_Gibdo(int k) {  // 9eb9a9
+  Generic_PutInBottle(k, bottle_state_8B_Gibdo); //Pokemode
   Gibdo_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -22320,6 +22728,7 @@ void Gibdo_Draw(int k) {  // 9ebb20
 }
 
 void Sprite_89_MothulaBeam(int k) {  // 9ebb42
+  Generic_PutInBottle(k, bottle_state_89_MothulaBeam); //Pokemode
   SpriteDraw_SingleLarge(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -22348,6 +22757,7 @@ void Sprite_89_MothulaBeam(int k) {  // 9ebb42
 }
 
 void Sprite_94_Tile(int k) {  // 9ebbb9
+  Generic_PutInBottle(k, bottle_state_94_Pirogusu); //Pokemode
   sprite_obj_prio[k] = 0x30;
   FlyingTile_Draw(k);
   if (Sprite_ReturnIfPaused(k))
@@ -22415,6 +22825,7 @@ void FlyingTile_Draw(int k) {  // 9ebcca
 }
 
 void Sprite_8A_SpikeBlock(int k) {  // 9ebce8
+  Generic_PutInBottle(k, bottle_state_8A_SpikeBlock); //Pokemode
   if (!sprite_E[k]) {
     SpriteDraw_SingleLarge(k);
     if (Sprite_ReturnIfInactive(k))
@@ -22494,6 +22905,7 @@ bool SpikeBlock_CheckStatueCollision(int k) {  // 9ebe19
 }
 
 void Sprite_88_Mothula(int k) {  // 9ebe7e
+  Generic_PutInBottle(k, bottle_state_88_Mothula); //Pokemode
   if (enhanced_features0 & kFeatures0_MiscBugFixes) {
     // L4 sword and L3 spin slash can now damage Mothula
     enemy_damage_data[0x884] = 1;
@@ -22659,6 +23071,7 @@ void Mothula_HandleSpikes(int k) {  // 9ec088
 }
 
 void Sprite_86_Kodongo(int k) {  // 9ec103
+  Generic_PutInBottle(k, bottle_state_86_Kodongo); //Pokemode
   static const int8 kKodondo_Xvel[4] = {1, -1, 0, 0};
   static const int8 kKodondo_Yvel[4] = {0, 0, 1, -1};
   static const uint8 kKodondo_Gfx[8] = {2, 2, 0, 5, 3, 3, 0, 5};
@@ -22737,6 +23150,7 @@ void Kodongo_SpawnFire(int k) {  // 9ec223
 }
 
 void Sprite_87_KodongoFire(int k) {  // 9ec274
+  Generic_PutInBottle(k, bottle_state_87_KodongoFire); //Pokemode
   static const uint8 kFlame_OamFlags[4] = { 0, 0x40, 0xc0, 0x80 };
   static const int8 kFlame_Gfx[32] = {
     5, 4, 3, 1, 2, 0, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0,
@@ -22784,6 +23198,7 @@ void Flame_Draw(int k) {  // 9ec35c
 }
 
 void Sprite_85_YellowStalfos(int k) {  // 9ec37f
+  Generic_PutInBottle(k, bottle_state_85_YellowStalfos); //Pokemode
   static const int8 kYellowStalfos_ObjPrio[6] = {0x30, 0, 0, 0, 0x30, 0};
   static const int8 kYellowStalfos_Gfx[32] = {
     8, 5, 1, 1, 8, 5, 1, 1, 8, 5, 1, 1, 7, 4, 2, 2,
@@ -22974,6 +23389,7 @@ void SpritePrep_Eyegore(int k) {  // 9ec700
 }
 
 void Sprite_83_GreenEyegore(int k) {  // 9ec79b
+  Generic_PutInBottle(k, bottle_state_83_GreenEyegore); //Pokemode
   static const int8 kGoriya_Xvel[32] = {
     0,  16, -16, 0, 0,  13, -13, 0, 0,  13, -13, 0, 0, 0, 0, 0,
     0, -24,  24, 0, 0, -16,  16, 0, 0, -16,  16, 0, 0, 0, 0, 0,
@@ -23179,6 +23595,7 @@ void SpritePrep_AntifairyCircle(int k) {  // 9ecb0c
 }
 
 void Sprite_82_AntifairyCircle(int k) {  // 9ecb97
+  Generic_PutInBottle(k, bottle_state_82_AntifairyCircle); //Pokemode
   static const int8 kBubbleGroup_Vel[2] = {1, -1};
   static const uint8 kBubbleGroup_VelTarget[2] = {18, (uint8)-18};
 
@@ -23203,6 +23620,7 @@ void Sprite_82_AntifairyCircle(int k) {  // 9ecb97
 }
 
 void Sprite_81_Hover(int k) {  // 9ecc02
+  Generic_PutInBottle(k, bottle_state_81_Hover); //Pokemode
   static const int8 kHover_OamFlags[4] = {0x40, 0, 0x40, 0};
   sprite_obj_prio[k] |= 48;
   SpriteDraw_SingleLarge(k);
@@ -23252,6 +23670,7 @@ void Sprite_81_Hover(int k) {  // 9ecc02
 }
 
 void Sprite_AB_CrystalMaiden(int k) {  // 9ece03
+  Generic_PutInBottle(k, bottle_state_AB_CrystalMaiden); //Pokemode
   cur_sprite_x -= dung_floor_x_offs;
   cur_sprite_y -= dung_floor_y_offs;
 
@@ -23337,6 +23756,7 @@ void CrystalMaiden_RunCutscene(int k) {  // 9ece39
 }
 
 void Sprite_7D_BigSpike(int k) {  // 9ecf47
+  Generic_PutInBottle(k, bottle_state_7D_BigSpike); //Pokemode
   static const int8 kSpikeTrap_Xvel[4] = {32, -32, 0, 0};
   static const int8 kSpikeTrap_Xvel2[4] = {-16, 16, 0, 0};
   static const int8 kSpikeTrap_Yvel[4] = {0, 0, 32, -32};
@@ -23386,6 +23806,7 @@ void SpikeTrap_Draw(int k) {  // 9ecfff
 }
 
 void Sprite_7E_Firebar_Clockwise(int k) {  // 9ed01a
+  Generic_PutInBottle(k, bottle_state_7E_Firebar_Clockwise); //Pokemode
   static const int8 kGuruguruBar_incr[4] = {-2, 2, -1, 1};
   Firebar_Main(k);
   if (Sprite_ReturnIfInactive(k))
@@ -23429,6 +23850,7 @@ void Firebar_Main(int k) {  // 9ed049
 }
 
 void Sprite_80_Firesnake(int k) {  // 9ed1d1
+  Generic_PutInBottle(k, bottle_state_80_Firesnake); //Pokemode
   static const uint8 kWinder_OamFlags[4] = {0, 0x40, 0x80, 0xc0};
   static const int8 kWinder_Xvel[4] = {24, -24, 0, 0};
   static const int8 kWinder_Yvel[4] = {0, 0, 24, -24};
@@ -23472,6 +23894,7 @@ void Firesnake_SpawnFireball(int j) {  // 9ed239
 }
 
 void Sprite_7C_GreenStalfos(int k) {  // 9ed299
+  Generic_PutInBottle(k, bottle_state_7C_GreenStalfos); //Pokemode
   static const uint8 kGreenStalfos_Dir[4] = {4, 6, 0, 2};
   static const uint8 kGreenStalfos_OamFlags[4] = {0x40, 0, 0, 0};
   static const uint8 kGreenStalfos_Gfx[4] = {0, 0, 1, 2};
@@ -23508,6 +23931,7 @@ void Sprite_7C_GreenStalfos(int k) {  // 9ed299
 }
 
 void Sprite_7A_Agahnim(int k) {  // 9ed330
+  Generic_PutInBottle(k, bottle_state_7A_Agahnim); //Pokemode
   int j;
   uint8 t;
   static const uint8 kAgahnim_StartState[2] = {1, 6};
@@ -23834,6 +24258,7 @@ void Agahnim_Draw(int k) {  // 9ed978
 }
 
 void Sprite_7B_AgahnimBalls(int k) {  // 9eda42
+  Generic_PutInBottle(k, bottle_state_7B_AgahnimBalls); //Pokemode
   if (sprite_B[k]) {
     if (sprite_delay_main[k])
       Sprite_ApplySpeedTowardsLink(k, 32);
@@ -23998,28 +24423,94 @@ void InitializeSpawnedBee(int k) {  // 9edc9b
 }
 
 int ReleaseBeeFromBottle(int x_value) {  // 9edccf
-  static const int8 kSpawnBee_XY[8] = {8, 2, -2, -8, 10, 5, -5, -10};
 
-  SpriteSpawnInfo info;
-  int j = Sprite_SpawnDynamically(x_value, 0xb2, &info);
+    SpriteSpawnInfo info;
+    int j;
+    int idxInsideBottle = link_bottle_info[link_item_bottle_index - 1];
+
+    if (enhanced_features0 & kFeatures0_Pokemode){ //Pokemode
+    uint8 sprite_id = 0xb2; //PlayerBee by default
+    if(idxInsideBottle >= 243) //after #0xF2 = 243, particular cases!!
+    {
+         switch(idxInsideBottle){
+         case bottle_state_00_Raven: sprite_id = 0x00; break;
+         case bottle_state_01_Vulture_bounce: sprite_id = 0x01; break;
+         case bottle_state_02_StalfosHead: sprite_id = 0x02; break;
+         case bottle_state_NULL: sprite_id = 0x03; break;
+         case bottle_state_04_PullSwitch_bounce: sprite_id = 0x04; break;
+         case bottle_state_05_PullSwitch_bounce: sprite_id = 0x05; break;
+         case bottle_state_06_PullSwitch_bounce: sprite_id = 0x06; break;
+         case bottle_state_07_PullSwitch_bounce: sprite_id = 0x07; break;
+         case bottle_state_08_Octorok: sprite_id = 0x08; break;
+         }
+    }else if(idxInsideBottle >= 9) //below 9, bottle_state_[...] are native
+    {
+        sprite_id = idxInsideBottle;
+    }else{
+          sprite_id = 0xb2; //PlayerBee
+    }
+    j = Sprite_SpawnDynamically(x_value, sprite_id, &info);
+    if (sprite_id == 0xb2){ //if bee
+      InitializeSpawnedBee(j); // sprite_ai_state[k] is set to 1 inside +other stuff
+    }
+    else if(sprite_id == 0x00) //Raven
+    {
+        sprite_ai_state[j] = 10; //Friendly state
+    }
+    else if(sprite_id == 0x41) //Guard
+    {
+        sprite_ai_state[j] = 10; //Friendly state
+    }
+    else if (sprite_id == 0x76)//Zelda
+    {
+        sprite_ai_state[j] = 10;// cf Zelda_InCell()=> TransitionToTagalong
+    }
+    else if(sprite_id == 0xb5) //Bombshop
+    {
+        sprite_subtype2[j] = 2; //1=Clerk, 2=Bomb, 3=SuperBomb, 3=Huff
+    }
+
+  }else{
+      j = Sprite_SpawnDynamically(x_value, 0xb2, &info); //bee
+  }
+
   if (j >= 0) {
-    sprite_floor[j] = link_is_on_lower_level;
-    Sprite_SetX(j, link_x_coord + 8);
-    Sprite_SetY(j, link_y_coord + 16);
-    if (link_bottle_info[link_item_bottle_index - 1] == 8)
-      sprite_head_dir[j] = 1;
-    InitializeSpawnedBee(j);
-    sprite_x_vel[j] = kSpawnBee_XY[GetRandomNumber() & 7];
-    sprite_y_vel[j] = kSpawnBee_XY[GetRandomNumber() & 7];
-    sprite_delay_main[j] = 64;
-    sprite_A[j] = 64;
+
+
+    if (enhanced_features0 & kFeatures0_Pokemode){ //Pokemode
+        sprite_floor[j] = link_is_on_lower_level;
+        Sprite_SetX(j, link_x_coord + 16);//8);
+        Sprite_SetY(j, link_y_coord + 16);
+        if (idxInsideBottle == bottle_state_goodbee){
+          sprite_head_dir[j] = 1; // make bee face South??
+        }
+        sprite_x_vel[j] = 0;//
+        sprite_y_vel[j] = 0;//
+        sprite_delay_main[j] = 64;
+        sprite_graphics[j] = 0;
+
+
+    }else{
+        static const int8 kSpawnBee_XY[8] = {8, 2, -2, -8, 10, 5, -5, -10};
+        sprite_floor[j] = link_is_on_lower_level;
+        Sprite_SetX(j, link_x_coord + 8);
+        Sprite_SetY(j, link_y_coord + 16);
+        if (idxInsideBottle == bottle_state_goodbee){
+          sprite_head_dir[j] = 1; //(Ycar) make bee face South??
+        }
+        sprite_x_vel[j] = kSpawnBee_XY[GetRandomNumber() & 7];
+        sprite_y_vel[j] = kSpawnBee_XY[GetRandomNumber() & 7];
+        sprite_delay_main[j] = 64;
+        sprite_A[j] = 64;
+    }
+
   }
   return j;
 }
 
 void Bee_Main(int k) {  // 9edd45
   Bee_HandleZ(k);
-  SpriteDraw_SingleSmall(k);
+  SpriteDraw_SingleSmall(k); // bee main
   Bee_HandleInteractions(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -24032,7 +24523,7 @@ void Bee_Main(int k) {  // 9edd45
   sprite_graphics[k] = (k ^ frame_counter) >> 1 & 1;
   if (!sprite_delay_aux4[k]) {
     Sprite_CheckDamageToLink(k);
-    if (Sprite_CheckDamageFromLink(k) & kCheckDamageFromPlayer_Ne) {
+    if (Sprite_CheckDamageFromLink(k) & kCheckDamageFromPlayer_Net) {
       Sprite_ShowMessageUnconditional(0xc8);
       sprite_ai_state[k] = 2; // put in bottle
       return;
@@ -24055,7 +24546,7 @@ void Bee_Main(int k) {  // 9edd45
 
 int Sprite_Find_EmptyBottle() {  // 9ede2e
   for (int i = 0; i != 4; i++)
-    if (link_bottle_info[i] == 2)
+    if (link_bottle_info[i] == bottle_state_empty)
       return i;
   return -1;
 }
@@ -24066,6 +24557,7 @@ void Bee_HandleInteractions(int k) {  // 9ede44
 }
 
 void Sprite_B2_PlayerBee(int k) {  // 9ede63
+  Generic_PutInBottle(k, bottle_state_B2_PlayerBee); //Pokemode
   static const uint8 kGoodBee_Tab0[2] = {0xa, 0x14};
 
   switch (sprite_ai_state[k]) {
@@ -24073,7 +24565,7 @@ void Sprite_B2_PlayerBee(int k) {  // 9ede63
     if (!sprite_E[k]) {
       sprite_state[k] = 0;
       uint8 or_bottle = link_bottle_info[0] | link_bottle_info[1] | link_bottle_info[2] | link_bottle_info[3];
-      if (!(or_bottle & 8))
+      if (!(or_bottle & bottle_state_goodbee))
         GoldBee_SpawnSelf(k);
     }
     break;
@@ -24084,7 +24576,7 @@ void Sprite_B2_PlayerBee(int k) {  // 9ede63
     Bee_HandleInteractions(k);
     if (Sprite_ReturnIfInactive(k))
       return;
-    Bee_Bzzt(k);
+    Bee_Bzzt(k); //bee bzzt sound
     Sprite_MoveXY(k);
     sprite_graphics[k] = (k ^ frame_counter) >> 1 & 1;
     if (sprite_head_dir[k])
@@ -24095,9 +24587,9 @@ void Sprite_B2_PlayerBee(int k) {  // 9ede63
     }
     if (sprite_delay_aux4[k])
       return;
-    if (Sprite_CheckDamageFromLink(k) & kCheckDamageFromPlayer_Ne) {
+    if (Sprite_CheckDamageFromLink(k) & kCheckDamageFromPlayer_Net) {
       Sprite_ShowMessageUnconditional(0xc8);
-      sprite_ai_state[k]++;
+      sprite_ai_state[k]++; //will be put in bottle
       return;
     }
     if ((k ^ frame_counter) & 3)
@@ -24155,7 +24647,7 @@ bool PlayerBee_FindTarget(int k, Point16U *pt) {  // 9edfab
       if (!sprite_head_dir[k] || !(sprite_bump_damage[j] & 0x40))
         continue;
     }
-    PlayerBee_HoneInOnTarget(j, k);
+    PlayerBee_HoneInOnTarget(j, k); // bee hurts stuff here
     pt->x = Sprite_GetX(j) + (GetRandomNumber() & 3) * 5;
     pt->y = Sprite_GetY(j) + (GetRandomNumber() & 3) * 5;
     return true;
@@ -24165,10 +24657,11 @@ bool PlayerBee_FindTarget(int k, Point16U *pt) {  // 9edfab
 
 void Bee_Bzzt(int k) {  // 9ee02e
   if (!((k ^ frame_counter) & 31))
-    SpriteSfx_QueueSfx3WithPan(k, 0x2c);
+    SpriteSfx_QueueSfx3WithPan(k, 0x2c);//plays the  bzzz sound
 }
 
 void Sprite_B3_PedestalPlaque(int k) {  // 9ee044
+  Generic_PutInBottle(k, bottle_state_B3_PedestalPlaque); //Pokemode
   PrepOamCoordsRet info;
   Sprite_PrepOamCoord(k, &info);
   if (Sprite_ReturnIfInactive(k))
@@ -24210,15 +24703,16 @@ void Sprite_B3_PedestalPlaque(int k) {  // 9ee044
 }
 
 void Sprite_B4_PurpleChest(int k) {  // 9ee0dd
+  Generic_PutInBottle(k, bottle_state_B4_PurpleChest); //Pokemode
   SpriteDraw_SingleLarge(k);
   if (Sprite_ReturnIfInactive(k))
     return;
   if (!sprite_ai_state[k]) {
-    if (Sprite_ShowMessageOnContact(k, 0x116) & 0x100 && follower_indicator == 0)
+    if (Sprite_ShowMessageOnContact(k, 0x116) & 0x100 && follower_indicator == follower_indicator_noone)
       sprite_ai_state[k] = 1;
   } else {
     sprite_state[k] = 0;
-    follower_indicator = 12;
+    follower_indicator = follower_indicator_PurpleChess;
     LoadFollowerGraphics();
     Sprite_BecomeFollower(k);
   }
@@ -24226,10 +24720,18 @@ void Sprite_B4_PurpleChest(int k) {  // 9ee0dd
 
 void Sprite_B5_BombShop(int k) {  // 9ee111
   switch (sprite_subtype2[k]) {
-  case 0: Sprite_BombShop_Clerk(k); break;
-  case 1: Sprite_BombShop_Bomb(k); break;
-  case 2: Sprite_BombShop_SuperBomb(k); break;
-  case 3: Sprite_BombShop_Huff(k); break;
+  case 0: {
+      Generic_PutInBottle(k, bottle_state_B5_BombShop); //Pokemode
+      Sprite_BombShop_Clerk(k); break;}
+  case 1: {
+      Generic_PutInBottle(k, bottle_state_B5_BombShop); //Pokemode
+      Sprite_BombShop_Bomb(k); break;}
+  case 2: {
+      Generic_PutInBottle(k, bottle_state_B5_BombShop); //Pokemode
+      Sprite_BombShop_SuperBomb(k); break;}
+  case 3: {
+      Generic_PutInBottle(k, bottle_state_B5_BombShop); //Pokemode
+      Sprite_BombShop_Huff(k); break;}
   }
 }
 
@@ -24292,7 +24794,7 @@ void Sprite_BombShop_SuperBomb(int k) {  // 9ee1df
       Sprite_ShowMessageUnconditional(0x17c);
       ShopItem_PlayBeep(k);
     } else {
-      follower_indicator = 13;
+      follower_indicator = follower_indicator_BigBomb;
       LoadFollowerGraphics();
       Sprite_BecomeFollower(k);
       sprite_state[k] = 0;
@@ -24347,6 +24849,7 @@ void BombShopEntity_Draw(int k) {  // 9ee2c6
 }
 
 void Sprite_B6_Kiki(int k) {  // 9ee2ef
+  Generic_PutInBottle(k, bottle_state_B6_Kiki); //Pokemode
   switch(sprite_subtype2[k]) {
   case 0: Kiki_LyingInwait(k); break;
   case 1: Kiki_OfferEntranceService(k); break;
@@ -24407,7 +24910,7 @@ void Kiki_OfferInitialService(int k) {  // 9ee3af
     } else {
       Sprite_ShowMessageUnconditional(0x120);
       tagalong_event_flags &= ~3;
-      follower_indicator = 0;
+      follower_indicator = follower_indicator_noone;
       sprite_ai_state[k]++;
       flag_is_link_immobilized++;
     }
@@ -24611,17 +25114,18 @@ bool Kiki_Draw(int k) {  // 9ee859
 }
 
 void Sprite_B7_BlindMaiden(int k) {  // 9ee8b6
+  Generic_PutInBottle(k, bottle_state_B7_BlindMaiden); //Pokemode
   CrystalMaiden_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
   Sprite_TrackBodyToHead(k);
   sprite_head_dir[k] = Sprite_DirectionToFaceLink(k, NULL) ^ 3;
   if (!sprite_ai_state[k]) {
-    if (Sprite_ShowMessageOnContact(k, 0x122) & 0x100)
+    if (Sprite_ShowMessageOnContact(k, 0x122) & 0x100) //291: Ohh, thank you very much![2]You saved my life.  Please take[3]me outside.
       sprite_ai_state[k] = 1;
   } else {
     sprite_state[k] = 0;
-    follower_indicator = 6;
+    follower_indicator = follower_indicator_BlindMaiden;
     LoadFollowerGraphics();
     Sprite_BecomeFollower(k);
   }
@@ -24637,7 +25141,7 @@ void OldMan_RevertToSprite(int k) {  // 9ee938
   sprite_ignore_projectile[j] = 1;
   sprite_subtype2[j] = 1;
   OldMan_EnableCutscene();
-  follower_indicator = 0;
+  follower_indicator = follower_indicator_noone;
   link_speed_setting = 0;
 }
 
@@ -24647,6 +25151,7 @@ void OldMan_EnableCutscene() {  // 9ee989
 }
 
 void Sprite_AD_OldMan(int k) {  // 9ee992
+  Generic_PutInBottle(k, bottle_state_AD_OldMan); //Pokemode
   static const uint16 kOldMountainManMsgs[3] = {0x9e, 0x9f, 0xa0};
   int j;
   OldMountainMan_Draw(k);
@@ -24665,7 +25170,7 @@ void Sprite_AD_OldMan(int k) {  // 9ee992
       }
       break;
     case 1: // switch to tagalong
-      follower_indicator = 4;
+      follower_indicator = follower_indicator_OldMan;
       Sprite_BecomeFollower(k);
       which_starting_point = 5;
       sprite_state[k] = 0;
@@ -24679,7 +25184,7 @@ void Sprite_AD_OldMan(int k) {  // 9ee992
     case 0:  // grant mirror
       sprite_ai_state[k]++;
       item_receipt_method = 0;
-      Link_ReceiveItem(0x1a, 0);
+      Link_ReceiveItem(receiveitem_index_mirror, 0);
       which_starting_point = 1;
       OldMan_EnableCutscene();
       sprite_delay_main[k] = 48;
@@ -24733,10 +25238,12 @@ void Sprite_AD_OldMan(int k) {  // 9ee992
 }
 
 void Sprite_B8_DialogueTester(int k) {  // 9eeae7
+  Generic_PutInBottle(k, bottle_state_B8_DialogueTester); //Pokemode
   assert(0);
 }
 
 void Sprite_B9_BullyAndPinkBall(int k) {  // 9eeb33
+  Generic_PutInBottle(k, bottle_state_B9_BullyAndPinkBall); //Pokemode
   switch(sprite_subtype2[k]) {
   case 0: Sprite_PinkBall(k); return;
   case 1: PinkBall_Distress(k); return;
@@ -24935,6 +25442,7 @@ void Bully_HandleMessage(int k) {  // 9eee25
 }
 
 void Sprite_BA_Whirlpool(int k) {  // 9eee5a
+  Generic_PutInBottle(k, bottle_state_BA_Whirlpool); //Pokemode
   static const uint8 kWhirlpool_OamFlags[4] = {0, 0x40, 0xc0, 0x80};
 
   if (BYTE(overworld_screen_index) == 0x1b) {
@@ -24972,6 +25480,7 @@ void Sprite_BA_Whirlpool(int k) {  // 9eee5a
 }
 
 void Sprite_BB_Shopkeeper(int k) {  // 9eeeef
+  Generic_PutInBottle(k, bottle_state_BB_Shopkeeper); //Pokemode
   switch (sprite_subtype2[k]) {
   case 0: Shopkeeper_StandardClerk(k); break;
   case 1: ChestGameGuy(k); break;
@@ -25372,6 +25881,7 @@ void SpriteDraw_ShopItem(int k) {  // 9ef4ce
 }
 
 void Sprite_AC_Apple(int k) {  // 9ef515
+  Generic_PutInBottle(k, bottle_state_AC_Apple); //Pokemode
   if (sprite_ai_state[k]) {
     Sprite_Apple(k);
     return;
@@ -25435,6 +25945,7 @@ void Sprite_Apple(int k) {  // 9ef57c
 }
 
 void Sprite_BC_Drunkard(int k) {  // 9ef603
+  Generic_PutInBottle(k, bottle_state_BC_Drunkard); //Pokemode
   DrinkingGuy_Draw(k);
   if (Sprite_ReturnIfInactive(k))
     return;
@@ -25466,6 +25977,7 @@ void SomariaPlatform_LocatePath(int k) {  // 9ef640
 }
 
 void Sprite_ED_SomariaPlatform(int k) {  // 9ef6d4
+  Generic_PutInBottle(k, bottle_state_ED_SomariaPlatform); //Pokemode (be careful wher you place that one!! => bug)
   switch(sprite_graphics[k]) {
   case 0: {
     SomariaPlatform_LocatePath(k);
@@ -25726,6 +26238,7 @@ void SomariaPlatform_DragLink(int k) {  // 9efb49
 }
 
 void Sprite_AE_Pipe_Down(int k) {  // 9efb7e
+  Generic_PutInBottle(k, bottle_state_AE_Pipe_Down); //Pokemode
   static const uint8 kPipe_Dirs[4] = {8, 4, 2, 1};
 
   uint8 t;

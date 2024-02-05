@@ -58,25 +58,25 @@ const uint8 kReceiveItemGfx[76] = {
   0x34, 0x35, 0x31, 0x33,    2, 0x32, 0x36, 0x37, 0x2c,    6,  0xc, 0x38,
 };
 const uint16 kMemoryLocationToGiveItemTo[76] = {
-  0xf359, 0xf359, 0xf359, 0xf359,
-  0xf35a, 0xf35a, 0xf35a, 0xf345,
-  0xf346, 0xf34b, 0xf342, 0xf340,
-  0xf341, 0xf344, 0xf35c, 0xf347,
-  0xf348, 0xf349, 0xf34a, 0xf34c,
-  0xf34c, 0xf350, 0xf35c, 0xf36b,
-  0xf351, 0xf352, 0xf353, 0xf354,
-  0xf354, 0xf34e, 0xf356, 0xf357,
-  0xf37a, 0xf34d, 0xf35b, 0xf35b,
-  0xf36f, 0xf364, 0xf36c, 0xf375,
-  0xf375, 0xf344, 0xf341, 0xf35c,
-  0xf35c, 0xf35c, 0xf36d, 0xf36e,
-  0xf36e, 0xf375, 0xf366, 0xf368,
-  0xf360, 0xf360, 0xf360, 0xf374,
-  0xf374, 0xf374, 0xf340, 0xf340,
-  0xf35c, 0xf35c, 0xf36c, 0xf36c,
-  0xf360, 0xf360, 0xf372, 0xf376,
-  0xf376, 0xf373, 0xf360, 0xf360,
-  0xf35c, 0xf359, 0xf34c, 0xf355,
+  0xf359, 0xf359, 0xf359, 0xf359, //0:link_sword_type,  1:link_sword_type,  2:link_sword_type,  3:link_sword_type,
+  0xf35a, 0xf35a, 0xf35a, 0xf345, //4:link_shield_type, 5:link_shield_type, 6:link_shield_type, 7:link_item_fire_rod,
+  0xf346, 0xf34b, 0xf342, 0xf340, //8:link_item_ice_rod, link_item_hammer, link_item_hookshot, link_item_bow,
+  0xf341, 0xf344, 0xf35c, 0xf347, //12:link_item_boomerang, link_item_mushroom, link_bottle_info, link_item_bombos_medallion,
+  0xf348, 0xf349, 0xf34a, 0xf34c, //16link_item_ether_medallion, link_item_quake_medallion, link_item_torch, link_item_flute,
+  0xf34c, 0xf350, 0xf35c, 0xf36b, //20:link_item_flute, link_item_cane_somaria, link_bottle_info, link_heart_pieces
+  0xf351, 0xf352, 0xf353, 0xf354, //24:link_item_cane_byrna, link_item_cape, link_item_mirror, link_item_gloves
+  0xf354, 0xf34e, 0xf356, 0xf357, //28:link_item_gloves, link_item_book_of_mudora, link_item_flippers, link_item_moon_pearl
+  0xf37a, 0xf34d, 0xf35b, 0xf35b, //32:link_has_crystals, link_item_bug_net, link_armor, link_armor
+  0xf36f, 0xf364, 0xf36c, 0xf375, //36:link_num_keys, link_compas, link_health_capacity, link_bomb_filler
+  0xf375, 0xf344, 0xf341, 0xf35c, //40:link_bomb_filler, link_item_mushroom, link_item_boomerang, link_bottle_info
+  0xf35c, 0xf35c, 0xf36d, 0xf36e, //44:link_bottle_info, link_bottle_info, link_health_current, link_magic_power
+  0xf36e, 0xf375, 0xf366, 0xf368, //48:link_magic_power, link_bomb_filler, link_bigkey, link_dungeon_map
+  0xf360, 0xf360, 0xf360, 0xf374, //52:link_rupees_goal, link_rupees_goal, link_rupees_goal, link_which_pendants
+  0xf374, 0xf374, 0xf340, 0xf340, //56:link_which_pendants, link_which_pendants, link_item_bow, link_item_bow
+  0xf35c, 0xf35c, 0xf36c, 0xf36c, //60:link_bottle_info, link_bottle_info, link_health_capacity, link_health_capacity
+  0xf360, 0xf360, 0xf372, 0xf376, //64:link_rupees_goal, link_rupees_goal, link_heart_filler, link_arrow_filler
+  0xf376, 0xf373, 0xf360, 0xf360, //68:link_arrow_filler, link_magic_filler, link_rupees_goal, link_rupees_goal,
+  0xf35c, 0xf359, 0xf34c, 0xf355, //72:link_bottle_info, link_sword_type, link_item_flute, link_item_boots
 };
 static const int8 kValueToGiveItemTo[76] = {
      1,   2,   3,  4,
@@ -857,7 +857,7 @@ void ItemReceipt_GiveBottledItem(uint8 item) {  // 89893e
   }
   if ((j = FindInByteArray(kPotionList, item, 5)) >= 0) {
     for (int i = 0; i != 4; i++) {
-      if (link_bottle_info[i] == 2) {
+      if (link_bottle_info[i] == bottle_state_empty) {
         link_bottle_info[i] = j + 3;
         return;
       }

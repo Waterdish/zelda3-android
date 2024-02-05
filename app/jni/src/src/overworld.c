@@ -478,8 +478,8 @@ setsong:
   if (!(overworld_screen_index & 0x40))
     Sprite_InitializeMirrorPortal();
   sound_effect_ambient = sram_progress_indicator < 2 ? 1 : 5;
-  if (follower_indicator == 6)
-    follower_indicator = 0;
+  if (follower_indicator == follower_indicator_BlindMaiden)
+    follower_indicator = follower_indicator_noone;
 
   is_standing_in_doorway = 0;
   button_mask_b_y = 0;
@@ -3293,8 +3293,8 @@ uint16 Overworld_ToolAndTileInteraction(uint16 x, uint16 y) {  // 9bbd82
     ((x - overworld_offset_base_x) & overworld_offset_mask_x);
   uint16 attr = overworld_tileattr[pos >> 1], yv;
 
-  if (!(link_item_in_hand & 2)) {
-    if (!(link_item_in_hand & 0x40)) {
+  if (!(link_item_in_hand & item_in_hand_hammer)) { // not hammer in hand
+    if (!(link_item_in_hand & item_in_hand_magic_powder)) { // not magic powder in hand
       if (attr == 0x34 || attr == 0x71 || attr == 0x35 || attr == 0x10d ||
           attr == 0x10f || attr == 0xe1 || attr == 0xe2 || attr == 0xda ||
           attr == 0xf8 || attr == 0x10e) {  // shovelable
@@ -3473,7 +3473,7 @@ void Overworld_BombTile(int x, int y) {  // 9bc155
   int pos = ((y - overworld_offset_base_y & overworld_offset_mask_y) << 3) +
     ((x >> 3) - overworld_offset_base_x & overworld_offset_mask_x);
 
-  if (follower_indicator == 13)
+  if (follower_indicator == follower_indicator_BigBomb)
     goto label_a;
 
   a = dung_bg2[pos >> 1];
@@ -3581,7 +3581,7 @@ fail:
 
   BYTE(dung_secrets_unk1) = 0xff;
   if (data != 0x84 && !(save_ow_event_info[overworld_screen_index] & 2)) {
-    if (overworld_screen_index == 0x5b && follower_indicator != 13)
+    if (overworld_screen_index == 0x5b && follower_indicator != follower_indicator_BigBomb)
       goto fail;
     sound_effect_2 = 0x1b;
   // The discovery chime is missing when lifting the rock covering the magic portal leading to the Ice Temple
@@ -3595,7 +3595,7 @@ fail:
 }
 
 void AdjustSecretForPowder() {  // 9bc943
-  if (link_item_in_hand & 0x40)
+  if (link_item_in_hand & item_in_hand_magic_powder) // magic powder
     dung_secrets_unk1 = 4;
 }
 
