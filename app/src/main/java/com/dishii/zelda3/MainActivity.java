@@ -25,6 +25,7 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputContentInfo;
 import android.widget.Toast;
+import android.widget.SeekBar;
 
 //This class is the main SDLActivity and just sets up a bunch of default files
 public class MainActivity extends SDLActivity {
@@ -99,6 +100,8 @@ public class MainActivity extends SDLActivity {
         int keyCodeFor_Left = KeyEvent.KEYCODE_G;
         int keyCodeFor_Right = KeyEvent.KEYCODE_J;
         int keyCodeFor_Turbo = KeyEvent.KEYCODE_M;
+
+        final boolean[] hasScreenBeenTouched = {false};
 
         // Manage touch events from the keys
         overlayView.findViewById(R.id.ButtonKeyboard).setOnClickListener(new View.OnClickListener() {
@@ -234,6 +237,33 @@ public class MainActivity extends SDLActivity {
                 return false;
             }
         });
+
+
+        overlayView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (!hasScreenBeenTouched[0]) {
+                    overlayView.setAlpha(1f);
+                    hasScreenBeenTouched[0] = true;
+                }
+                return false;
+            }
+        });
+
+        ((SeekBar)overlayView.findViewById(R.id.seekBar_Alpha)).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar view, int progress, boolean fromUser) {
+                float alpha = progress/100f;
+                overlayView.setAlpha(alpha);
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
         overlayView.findViewById(R.id.Button_Dpad).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
