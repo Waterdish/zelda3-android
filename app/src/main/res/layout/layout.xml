@@ -5,6 +5,7 @@
     android:id="@+id/tableLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:alpha="0.01"
     tools:context=".MainActivity">
 
     <ImageButton
@@ -15,8 +16,8 @@
         android:layout_marginRight="8dp"
         android:contentDescription="Display keyboard"
         android:src="@android:drawable/ic_dialog_dialer"
-        app:layout_constraintEnd_toStartOf="@id/Button_Turbo"
-        app:layout_constraintTop_toTopOf="@id/Button_Turbo" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/Button_start"
@@ -119,5 +120,13 @@
         android:src="@android:drawable/ic_media_ff"
         app:layout_constraintBottom_toTopOf="@id/Button_R"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <SeekBar
+        android:id="@+id/seekBar_Alpha"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:progress="100"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
