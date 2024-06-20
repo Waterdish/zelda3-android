@@ -4,19 +4,17 @@ A port of Zelda3 to Android. <br>
 Original Repository: https://github.com/snesrev/zelda3 <br>
 
 Use the instructions on the original repository (or below if you don't have access to a computer) to extract the zelda3_assets.dat file from your rom and put it in Android/data/com.dishii.zelda3/files <br>
-Running the app once will create the directory. <br>
+Running the app once will create the directory (the app shall crash on first launch, but the directory will be created). <br>
 
 Android 13 users: check the releases tab for the Android 13 version of the app. 
 
-NOTE: Controller only. No touch controls yet. <br>
 
 How to Change Settings: <br>
-Android/data/com.dishii.zelda3/files contains zelda3.ini. Use a text editor to change options. <br>
+Android/data/com.dishii.zelda3/files contains zelda3.ini. Use a text editor to change options within this file. <br>
 
 Default Settings:
-L3 Turbo button <br>
-18:9 Aspect Ratio <br>
-Fullscreen(no android on-screen controls) <br>
+This branch supports both touch screen controls and bluetooth controllers. <br>
+By default, the ini file is set for screen touch control. Screen buttons will apear at first touch. For using a controller, see the appropriate lines in the ini file. <br>
 
 <h3>Instructions for creating zelda3_assets.dat on android:</h3>
 1. Download PyDroid: https://play.google.com/store/apps/details?id=ru.iiec.pydroid3&hl=en_US. Choose to skip any options that ask for money, you can do all of the following steps without paying.<br>

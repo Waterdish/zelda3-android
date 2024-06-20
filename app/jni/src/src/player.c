@@ -1518,7 +1518,7 @@ endif_1:
     return;
   uint8 x = ++link_this_controls_sprite_oam;
   byte_7E005C = 9;
-  if (follower_indicator != 13 && x == 1)
+  if (follower_indicator != follower_indicator_BigBomb && x == 1)
     tagalong_var5 = x;
 
   if (x == 6) {
@@ -1603,10 +1603,10 @@ void HandleDungeonLandingFromPit() {  // 879520
   subsubmodule_index = 0;
   submodule_index = 0;
   link_disable_sprite_damage = 0;
-  if (follower_indicator != 0 && follower_indicator != 3) {
+  if (follower_indicator != follower_indicator_noone && follower_indicator != follower_indicator_0x3) {
     tagalong_var5 = 0;
-    if (follower_indicator == 13) {
-      follower_indicator = 0;
+    if (follower_indicator == follower_indicator_BigBomb) {
+      follower_indicator = follower_indicator_noone;
       super_bomb_indicator_unk2 = 0;
       super_bomb_indicator_unk1 = 0;
       follower_dropped = 0;
@@ -2009,9 +2009,9 @@ void Link_HandleYItem() {  // 879b0e
   }
 
   if (item != current_item_active) {
-    if (current_item_active == 8 && (link_item_flute & 2))
+    if (current_item_active == ciaLI_ShovelAndFlute && (link_item_flute & 2))
       button_mask_b_y &= ~0x40;
-    if (current_item_active == 19 && link_cape_mode)
+    if (current_item_active == ciaLI_Cape && link_cape_mode)
       Link_ForceUnequipCape();
   }
 
@@ -2019,8 +2019,8 @@ void Link_HandleYItem() {  // 879b0e
   if ((link_item_in_hand | link_position_mode) == 0)
     current_item_active = item;
 
-  if (current_item_active == 5 || current_item_active == 6)
-    eq_selected_rod = current_item_active - 5 + 1;
+  if (current_item_active == ciaLI_FireRod || current_item_active == ciaLI_IceRod)
+    eq_selected_rod = current_item_active - 5 + 1; //specify wether fire(=1) or ice(!=1) rod
 
   switch (current_item_active) {
   case 0:
@@ -2287,7 +2287,7 @@ void LinkItem_Rod() {  // 879eef
     link_delay_timer_spin_attack = kRodAnimDelays[0];
     link_animation_steps = 0;
     player_handler_timer = 0;
-    link_item_in_hand = 1;
+    link_item_in_hand = item_in_hand_rod; //Rod in hand 
   }
   HaltLinkWhenUsingItems();
   link_direction &= ~0xf;
@@ -2302,14 +2302,14 @@ void LinkItem_Rod() {  // 879eef
   link_speed_setting = 0;
   player_handler_timer = 0;
   link_delay_timer_spin_attack = 0;
-  link_item_in_hand &= ~1;
+  link_item_in_hand &= ~item_in_hand_rod;  //Remove rod from hand 
 out:
   button_mask_b_y &= ~0x40;
 }
 
 void LinkItem_Hammer() {  // 879f7b
   static const uint8 kHammerAnimDelays[] = { 3, 3, 16 };
-  if (link_item_in_hand & 0x10)
+  if (link_item_in_hand & item_in_hand_bow) //if bow in hand 
     return;
   if (!(button_mask_b_y & 0x40)) {
     if (is_standing_in_doorway || !(filtered_joypad_H & kJoypadH_Y))
@@ -2319,7 +2319,7 @@ void LinkItem_Hammer() {  // 879f7b
     link_cant_change_direction |= 1;
     link_animation_steps = 0;
     player_handler_timer = 0;
-    link_item_in_hand = 2;
+    link_item_in_hand = item_in_hand_hammer; //put hammer in hand 
   }
 
   HaltLinkWhenUsingItems();
@@ -2341,7 +2341,7 @@ void LinkItem_Hammer() {  // 879f7b
     link_delay_timer_spin_attack = 0;
     button_mask_b_y &= ~0x40;
     link_cant_change_direction &= ~1;
-    link_item_in_hand &= ~2;
+    link_item_in_hand &= ~item_in_hand_hammer; //Remove hammer from hand 
   }
 }
 
@@ -2355,7 +2355,7 @@ void LinkItem_Bow() {  // 87a006
     link_delay_timer_spin_attack = kBowDelays[0];
     link_animation_steps = 0;
     player_handler_timer = 0;
-    link_item_in_hand = 16;
+    link_item_in_hand = item_in_hand_bow; // bow/arrow in hand
   }
   HaltLinkWhenUsingItems();
   link_direction &= ~0xf;
@@ -2386,7 +2386,7 @@ void LinkItem_Bow() {  // 87a006
   link_delay_timer_spin_attack = 0;
   button_mask_b_y &= ~0x40;
   link_cant_change_direction &= ~1;
-  link_item_in_hand &= ~0x10;
+  link_item_in_hand &= ~item_in_hand_bow; //Remove bow (16) from hand 
   if (button_b_frames >= 9)
     button_b_frames = 9;
 }
@@ -2396,7 +2396,7 @@ void LinkItem_Boomerang() {  // 87a0bb
     if (is_standing_in_doorway || !CheckYButtonPress() || flag_for_boomerang_in_place)
       return;
     link_animation_steps = 0;
-    link_item_in_hand = 0x80;
+    link_item_in_hand = item_in_hand_boomerang; //Put boomerang in hand
     player_handler_timer = 0;
     link_delay_timer_spin_attack = 7;
 
@@ -2438,7 +2438,7 @@ void Link_ResetBoomerangYStuff() {  // 87a11f
 }
 
 void LinkItem_Bombs() {  // 87a138
-  if (is_standing_in_doorway || follower_indicator == 13 || !CheckYButtonPress())
+  if (is_standing_in_doorway || follower_indicator == follower_indicator_BigBomb || !CheckYButtonPress())
     return;
   button_mask_b_y &= ~0x40;
   AncillaAdd_Bomb(7, enhanced_features0 & kFeatures0_MoreActiveBombs ? 3 : 1);
@@ -2446,58 +2446,75 @@ void LinkItem_Bombs() {  // 87a138
 }
 
 void LinkItem_Bottle() {  // 87a15b
-  if (!CheckYButtonPress())
-    return;
-  button_mask_b_y &= ~0x40;
   int btidx = link_item_bottle_index - 1;
   uint8 b = link_bottle_info[btidx];
-  if (b == 0)
+    if (b == bottle_state_empty || (button_mask_b_y & 0x40)){    // bottle is empty OR netAmnimation already started playing
+        LinkItem_Net();
+      return;
+    }
+    if (!CheckYButtonPress())                                
+       return;                                               
+    button_mask_b_y &= ~0x40;                                
+  if (b == 0){
     return;
+  }
   if (b < 3) {
 fail:
-    Ancilla_Sfx2_Near(60);
-  } else if (b == 3) {  // red potion
+       Ancilla_Sfx2_Near(sound_fail);
+  } else if (b == bottle_state_redpotion) {  // red potion
     if (link_health_capacity == link_health_current)
       goto fail;
-    link_bottle_info[btidx] = 2;
+    link_bottle_info[btidx] = bottle_state_empty;
     link_item_in_hand = 0;
     submodule_index = 4;
     saved_module_for_menu = main_module_index;
     main_module_index = 14;
     animate_heart_refill_countdown = 7;
     Hud_Rebuild();
-  } else if (b == 4) { // green potion
+  } else if (b == bottle_state_greenpotion) { // green potion
     if (link_magic_power == 128)
       goto fail;
-    link_bottle_info[btidx] = 2;
+    link_bottle_info[btidx] = bottle_state_empty;
     link_item_in_hand = 0;
     submodule_index = 8;
     saved_module_for_menu = main_module_index;
     main_module_index = 14;
     animate_heart_refill_countdown = 7;
     Hud_Rebuild();
-  } else if (b == 5) { // blue potion
+  } else if (b == bottle_state_bluepotion) { // blue potion
     if (link_health_capacity == link_health_current && link_magic_power == 128)
       goto fail;
-    link_bottle_info[btidx] = 2;
+    link_bottle_info[btidx] = bottle_state_empty;
     link_item_in_hand = 0;
     submodule_index = 9;
     saved_module_for_menu = main_module_index;
     main_module_index = 14;
     animate_heart_refill_countdown = 7;
     Hud_Rebuild();
-  } else if (b == 6) { // fairy
+  } else if (b == bottle_state_fairy) { // fairy
     link_item_in_hand = 0;
     if (ReleaseFairy() < 0)
       goto fail;
-    link_bottle_info[btidx] = 2;
+    link_bottle_info[btidx] = bottle_state_empty;
     Hud_Rebuild();
-  } else if (b == 7 || b == 8) {  // bad/good bee
+  } else if (b == bottle_state_bee || b == bottle_state_goodbee) {  // bad/good bee
     if (!ReleaseBeeFromBottle(btidx))
       goto fail;
-    link_bottle_info[btidx] = 2;
+    link_bottle_info[btidx] = bottle_state_empty;
     Hud_Rebuild();
+  } else //Ycar
+  {
+      if (enhanced_features0 & kFeatures0_Pokemode){ //Pokemode
+          {
+              if (!ReleaseBeeFromBottle(btidx))
+                goto fail;
+              link_bottle_info[btidx] = bottle_state_empty;
+              Hud_Rebuild();
+          }
+      }
+
   }
+
 }
 
 void LinkItem_Lamp() {  // 87a24d
@@ -2532,7 +2549,7 @@ void LinkItem_Powder() {  // 87a293
     player_handler_timer = 0;
     link_animation_steps = 0;
     link_direction &= ~0xf;
-    link_item_in_hand = 0x40;
+    link_item_in_hand = item_in_hand_magic_powder; //Put magic powder in hand (Ycar)
   }
   link_x_vel = link_y_vel = 0;
   link_direction = 0;
@@ -2655,7 +2672,7 @@ void LinkItem_Ether() {  // 87a494
   button_mask_b_y &= ~0x40;
 
   if (is_standing_in_doorway || flag_block_link_menu || dung_savegame_state_bits & 0x8000 || !((uint8)(link_sword_type + 1) & ~1) ||
-      follower_dropped && follower_indicator == 13) {
+      follower_dropped && follower_indicator == follower_indicator_BigBomb) {
     Ancilla_Sfx2_Near(60);
     return;
   }
@@ -2704,7 +2721,7 @@ void LinkItem_Bombos() {  // 87a569
   button_mask_b_y &= ~0x40;
 
   if (is_standing_in_doorway || flag_block_link_menu || dung_savegame_state_bits & 0x8000 || !((uint8)(link_sword_type + 1) & ~1) ||
-      follower_dropped && follower_indicator == 13) {
+      follower_dropped && follower_indicator == follower_indicator_BigBomb) {
     Ancilla_Sfx2_Near(60);
     return;
   }
@@ -2752,7 +2769,7 @@ void LinkItem_Quake() {  // 87a64b
   button_mask_b_y &= ~0x40;
 
   if (is_standing_in_doorway || flag_block_link_menu || dung_savegame_state_bits & 0x8000 || !((uint8)(link_sword_type + 1) & ~1) ||
-      follower_dropped && follower_indicator == 13) {
+      follower_dropped && follower_indicator == follower_indicator_BigBomb) {
     Ancilla_Sfx2_Near(60);
     return;
   }
@@ -2912,7 +2929,7 @@ void LinkItem_Mirror() {  // 87a91a
     if (!CheckYButtonPress())
       return;
 
-    if (follower_indicator == 10) {
+    if (follower_indicator == follower_indicator_Kiki) {
       dialogue_message_index = 289;
       Main_ShowTextMessage();
       return;
@@ -3026,19 +3043,19 @@ void Link_PerformDesertPrayer() {  // 87aa6c
 void HandleFollowersAfterMirroring() {  // 87aaa2
   TileDetect_MainHandler(0);
   link_animation_steps = 0;
-  if (follower_indicator == 12 || follower_indicator == 13) {
-    if (follower_indicator == 13) {
+  if (follower_indicator == follower_indicator_PurpleChess || follower_indicator == follower_indicator_BigBomb) {
+    if (follower_indicator == follower_indicator_BigBomb) {
       super_bomb_indicator_unk2 = 0xfe;
       super_bomb_indicator_unk1 = 0;
     }
     if (follower_dropped) {
       follower_dropped = 0;
-      follower_indicator = 0;
+      follower_indicator = follower_indicator_noone;
     }
-  } else if (follower_indicator == 9 || follower_indicator == 10) {
-    follower_indicator = 0;
-  } else if (follower_indicator == 7 || follower_indicator == 8) {
-    follower_indicator ^= (7 ^ 8);
+  } else if (follower_indicator == follower_indicator_LockSmith || follower_indicator == follower_indicator_Kiki) {
+    follower_indicator = follower_indicator_noone;
+  } else if (follower_indicator == follower_indicator_Smithy_Frog || follower_indicator == follower_indicator_Smith) {
+    follower_indicator ^= (follower_indicator_Smithy_Frog ^ follower_indicator_Smith);
     LoadFollowerGraphics();
     AncillaAdd_DwarfPoof(0x40, 4);
   }
@@ -3293,7 +3310,7 @@ void Link_HandleCape_passive_LiftCheck() {  // 87ae88
 }
 
 void Player_CheckHandleCapeStuff() {  // 87ae8f
-  if (link_cape_mode && current_item_active == 19) {
+  if (link_cape_mode && current_item_active == ciaLI_Cape) {
     if (current_item_active == current_item_y) {
       if (--cape_decrement_counter)
         return;
@@ -3407,11 +3424,21 @@ bool SearchForByrnaSpark() {  // 87afb5
   return false;
 }
 
+void LinkItem_Net_endAnimation(){
+    link_var30d = 0;
+    player_handler_timer = 0;
+    button_mask_b_y &= 0x80;
+    link_position_mode = 0;
+    link_cant_change_direction &= ~1;
+    player_oam_x_offset = 0x80;
+    player_oam_y_offset = 0x80;
+}
+
 void LinkItem_Net() {  // 87aff8
   static const uint8 kBugNetTimers[] = { 11, 6, 7, 8, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 9, 4, 5, 6, 7, 8, 1, 2, 3, 4, 10, 8, 1, 2, 3, 4, 5, 6, 7, 8 };
-  if (!(button_mask_b_y & 0x40)) {
-    if (is_standing_in_doorway || !CheckYButtonPress())
-      return;
+  if (!(button_mask_b_y & 0x40)) {      
+    if (is_standing_in_doorway || !CheckYButtonPress()){
+      return;}
 
     player_handler_timer = kBugNetTimers[(link_direction_facing >> 1) * 10];
     link_delay_timer_spin_attack = 3;
@@ -3419,7 +3446,7 @@ void LinkItem_Net() {  // 87aff8
     link_position_mode = 16;
     link_cant_change_direction |= 1;
     link_animation_steps = 0;
-    Ancilla_Sfx2_Near(50);
+    Ancilla_Sfx2_Near(sound_itemNet); //play the net sound
   }
 
   HaltLinkWhenUsingItems();
@@ -3431,14 +3458,10 @@ void LinkItem_Net() {  // 87aff8
   link_delay_timer_spin_attack = 3;
   player_handler_timer = kBugNetTimers[(link_direction_facing >> 1) * 10 + link_var30d];
 
-  if (link_var30d == 10) {
-    link_var30d = 0;
-    player_handler_timer = 0;
-    button_mask_b_y &= 0x80;
-    link_position_mode = 0;
-    link_cant_change_direction &= ~1;
-    player_oam_x_offset = 0x80;
-    player_oam_y_offset = 0x80;
+  if (link_var30d == 10) { // end animation
+
+    Follower_PutInBottle(follower_indicator);//pokemode
+    LinkItem_Net_endAnimation();
   }
 }
 
