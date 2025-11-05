@@ -3,10 +3,15 @@ A port of Zelda3 to Android. <br>
 
 Original Repository: https://github.com/snesrev/zelda3 <br>
 
-Use the instructions on the original repository (or below if you don't have access to a computer) to extract the zelda3_assets.dat file from your rom and put it in Android/data/com.dishii.zelda3/files <br>
-Running the app once will create the directory (the app shall crash on first launch, but the directory will be created). <br>
+## Compatibility
+**Supports Android 5.0 (Lollipop) through Android 15** <br>
+- Minimum SDK: API 21 (Android 5.0)
+- Target SDK: API 34 (Android 14)
+- Fully compatible with Android 13, 14, and 15
 
-Android 13 users: check the releases tab for the Android 13 version of the app. 
+## Setup Instructions
+Use the instructions on the original repository (or below if you don't have access to a computer) to extract the zelda3_assets.dat file from your rom and put it in Android/data/com.dishii.zelda3/files <br>
+Running the app once will create the directory (the app shall crash on first launch, but the directory will be created). <br> 
 
 
 How to Change Settings: <br>
