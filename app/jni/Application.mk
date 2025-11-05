@@ -7,4 +7,8 @@ APP_STL := c++_shared
 APP_ABI := armeabi-v7a arm64-v8a x86 x86_64
 
 # Min runtime API level
-APP_PLATFORM=android-16
+APP_PLATFORM=android-21
+
+# Optimization flags for release builds
+APP_CFLAGS := -O3 -ffast-math -fvisibility=hidden -DNDEBUG
+APP_CPPFLAGS := -O3 -ffast-math -fvisibility=hidden -DNDEBUG

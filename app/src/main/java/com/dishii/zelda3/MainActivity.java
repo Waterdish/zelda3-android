@@ -7,6 +7,7 @@ import org.libsdl.app.SDLControllerManager;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,8 +30,7 @@ import android.widget.SeekBar;
 
 //This class is the main SDLActivity and just sets up a bunch of default files
 public class MainActivity extends SDLActivity {
-
-    public boolean dPad_isPressed = false;
+    private static final String TAG = "Zelda3MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,19 +58,17 @@ public class MainActivity extends SDLActivity {
                     AssetCopyUtil.copyAssetsToExternal(this, "saves/ref", getExternalFilesDir(null).getAbsolutePath() + "/saves/ref");
                     datNotice.createNewFile();
                     if (configFile.createNewFile()) {
-                        InputStream inputStream;
-                        try {
-                            inputStream = getAssets().open("zelda3.ini");  // Replace with your actual asset file name
-
+                        // Use try-with-resources to ensure stream is closed properly (API 21+)
+                        try (InputStream inputStream = getAssets().open("zelda3.ini")) {
+                            // Write configuration data to configFile
+                            writeDataToFile(configFile, inputStream);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            Log.e(TAG, "Failed to copy zelda3.ini from assets", e);
                             return;
                         }
-                        // Write configuration data to configFile
-                        writeDataToFile(configFile,inputStream);
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Failed to create config files", e);
                 }
 
             }
@@ -312,19 +310,16 @@ public class MainActivity extends SDLActivity {
         });
     }
 
-    private void writeDataToFile(File file,InputStream inputStream) {
-        try {
-            // Copy the content from the asset InputStream to the target file
-            FileOutputStream outputStream = new FileOutputStream(file);
-            byte[] buffer = new byte[1024];
+    private void writeDataToFile(File file, InputStream inputStream) {
+        // Use try-with-resources for automatic resource management (API 21+)
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+            byte[] buffer = new byte[8192];  // Larger buffer for better performance
             int length;
             while ((length = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
             }
-            outputStream.close();
-            inputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Failed to write data to file: " + file.getName(), e);
         }
     }
     // Check if external storage is available and writable
