@@ -232,7 +232,7 @@ void Sprite_BecomeFollower(int k) {  // 899f39
 void Follower_Main() {  // 899fc4
   if (!follower_indicator)
     return;
-  if (follower_indicator == 0xe) {
+  if (follower_indicator == follower_indicator_HandleTrigger) {
     Follower_HandleTrigger();
     return;
   }
@@ -258,12 +258,12 @@ void Follower_NoTimedMessage() {  // 89a02b
     return;
   }
 
-  if (follower_indicator == 12) {
+  if (follower_indicator == follower_indicator_PurpleChess) {
     if (link_auxiliary_state != 0)
       goto label_a;
 
-  } else if (follower_indicator == 13) {
-    if (link_auxiliary_state == 2 || player_near_pit_state == 2)
+  } else if (follower_indicator == follower_indicator_BigBomb) {
+    if (link_auxiliary_state == 2 || player_near_pit_state == 2) // about to drop the bomb?
       goto label_c;
   } else {
     goto label_a;
@@ -275,7 +275,7 @@ void Follower_NoTimedMessage() {  // 89a02b
 
 label_c:
 
-  if (follower_indicator == 13 && !player_is_indoors) {
+  if (follower_indicator == follower_indicator_BigBomb && !player_is_indoors) {
     if (link_player_handler_state == kPlayerState_Ether ||
         link_player_handler_state == kPlayerState_Bombos ||
         link_player_handler_state == kPlayerState_Quake)
@@ -283,7 +283,7 @@ label_c:
     super_bomb_indicator_unk2 = 3;
     super_bomb_indicator_unk1 = 0xbb;
   }
-
+    // drop the bomb
   follower_dropped = 128;
   timer_tagalong_reacquire = 64;
 
@@ -352,18 +352,18 @@ void Follower_BasicMover() {  // 89a197
 
   Follower_HandleTrigger();
 
-  if (follower_indicator == 10 && link_auxiliary_state && countdown_for_blink) {
+  if (follower_indicator == follower_indicator_Kiki && link_auxiliary_state && countdown_for_blink) {
     int k = tagalong_var2 + 1 == 20 ? 0 : tagalong_var2 + 1;
     Kiki_SpawnHandler_B(k);
-    follower_indicator = 0;
+    follower_indicator = follower_indicator_noone;
     return;
   }
 
-  if (follower_indicator == 6 && dungeon_room_index == 0xac && (save_dung_info[101] & 0x100) && Follower_CheckBlindTrigger()) {
+  if (follower_indicator == follower_indicator_BlindMaiden && dungeon_room_index == 0xac && (save_dung_info[101] & 0x100) && Follower_CheckBlindTrigger()) {
     int k = tagalong_var2;
     uint16 x = tagalong_x_lo[k] | tagalong_x_hi[k] << 8;
     uint16 y = tagalong_y_lo[k] | tagalong_y_hi[k] << 8;
-    follower_indicator = 0;
+    follower_indicator = follower_indicator_noone;
     Blind_SpawnFromMaiden(x, y);
     BYTE(dung_flag_trapdoors_down)++;
     BYTE(dung_cur_door_pos) = 0;
@@ -415,17 +415,17 @@ label_d:
 void Follower_NotFollowing() {  // 89a2b2
   if (saved_tagalong_indoors != player_is_indoors)
     return;
-  if (!link_is_running && !Follower_CheckProximityToLink()) {
+  if (!link_is_running && !Follower_CheckProximityToLink()) { //( we get the bomb back when near it?)
     Follower_Initialize();
     saved_tagalong_indoors = player_is_indoors;
-    if (follower_indicator == 13) {
+    if (follower_indicator == follower_indicator_BigBomb) {
       super_bomb_indicator_unk2 = 254;
       super_bomb_indicator_unk1 = 0;
     }
     follower_dropped = 0;
     Tagalong_Draw();
   } else {
-    if (follower_indicator == 13 && !player_is_indoors && !super_bomb_indicator_unk2) {
+    if (follower_indicator == follower_indicator_BigBomb && !player_is_indoors && !super_bomb_indicator_unk2) {
       // Fixed so we wait a little bit if we can't spawn the ancilla
       if (AncillaAdd_SuperBombExplosion(0x3a, 0) >= 0) {
         follower_dropped = 0;
@@ -437,7 +437,7 @@ void Follower_NotFollowing() {  // 89a2b2
         // Fixed this by clearing the follower indicator here, instead of in the ancilla
         // bomb code.
         if (enhanced_features0 & kFeatures0_MiscBugFixes) {
-          follower_indicator = 0;
+          follower_indicator = follower_indicator_noone;
           return;
         }
       } else {
@@ -461,9 +461,9 @@ void Follower_OldMan() {  // 89a318
 
   Follower_HandleTrigger();
 
-  if (follower_indicator == 0) {
+  if (follower_indicator == follower_indicator_noone) {
     return;
-  } else if (follower_indicator == 4) {
+  } else if (follower_indicator == follower_indicator_OldMan) {
     if ((int8)tagalong_z[tagalong_var2] > 0 && tagalong_var1 != tagalong_var2) {
       tagalong_var2 = (tagalong_var2 + 1 >= 20) ? 0 : tagalong_var2 + 1;
       Tagalong_Draw();
@@ -523,7 +523,7 @@ void Follower_OldManUnused() {  // 89a41f
 
 void Follower_DoLayers() {  // 89a450
   oam_priority_value = kTagalongFlags[saved_tagalong_floor] << 8;
-  uint8 a = (follower_indicator == 12 || follower_indicator == 13) ? 2 : 1;
+  uint8 a = (follower_indicator == follower_indicator_PurpleChess || follower_indicator == follower_indicator_BigBomb) ? 2 : 1;
   Follower_AnimateMovement_preserved(a, saved_tagalong_x, saved_tagalong_y);
 }
 
@@ -574,7 +574,7 @@ void Follower_HandleTrigger() {  // 89a59e
       if (tmi->msg == 0x9d) {
         OldMan_RevertToSprite(st);
       } else if (tmi->msg == 0x28) {
-        follower_indicator = 0;
+        follower_indicator = follower_indicator_noone;
       }
       Main_ShowTextMessage();
       return;
@@ -611,8 +611,7 @@ void Follower_AnimateMovement_preserved(uint8 ain, uint16 xin, uint16 yin) {  //
 
   uint8 yt = 0, av = 0;
   uint8 sc = 0;
-
-  if ((ain >> 2 & 8) && (follower_indicator == 6 || follower_indicator == 1)) {
+  if ((ain >> 2 & 8) && (follower_indicator == follower_indicator_BlindMaiden || follower_indicator == follower_indicator_Zelda)) {
     yt = 8;
     if (swimcoll_var7[0] | swimcoll_var7[1])
       av = (frame_counter >> 1) & 4;
@@ -620,9 +619,9 @@ void Follower_AnimateMovement_preserved(uint8 ain, uint16 xin, uint16 yin) {  //
       av = (frame_counter >> 2) & 4;
   } else if (submodule_index == 8 || submodule_index == 14 || submodule_index == 16) {
     av = link_is_running ? (frame_counter & 4) : ((frame_counter >> 1) & 4);
-  } else if (follower_indicator == 11) {
+  } else if (follower_indicator == follower_indicator_11) {
     av = (frame_counter >> 1) & 4;
-  } else if ((follower_indicator == 12 || follower_indicator == 13) && follower_dropped || flag_is_link_immobilized ||
+  } else if ((follower_indicator == follower_indicator_PurpleChess || follower_indicator == follower_indicator_BigBomb) && follower_dropped || flag_is_link_immobilized ||
              submodule_index == 10 || main_module_index == 9 && submodule_index == 0x23 ||
              main_module_index == 14 && (submodule_index == 1 || submodule_index == 2) ||
              (link_y_vel | link_x_vel) == 0) {
@@ -644,7 +643,7 @@ void Follower_AnimateMovement_preserved(uint8 ain, uint16 xin, uint16 yin) {  //
   uint16 scrollx = xin - BG2HOFS_copy2;
 
   const uint8 *sk = kTagalongDraw_SprInfo0;
-  if (follower_indicator == 1 || follower_indicator == 6 || !(ain & 0x20)) {
+  if (follower_indicator == follower_indicator_Zelda || follower_indicator == follower_indicator_BlindMaiden || !(ain & 0x20)) {
     if (!(ain & 0xc0))
       goto skip_first_sprites;
     if ((ain & 0x80) || (sk += 12, sc == 0))
@@ -665,7 +664,7 @@ skip_first_sprites:
   if (pal == 7 && palette_swap_flag)
     pal = 0;
 
-  if (follower_indicator == 13) {
+  if (follower_indicator == follower_indicator_BigBomb) {
     // Display colorful superbomb palette also on frame 0.
     if (enhanced_features0 & kFeatures0_MiscBugFixes ? (super_bomb_indicator_unk2 <= 1) : (super_bomb_indicator_unk2 == 1))
      pal = (frame_counter & 7);
@@ -674,7 +673,7 @@ skip_first_sprites:
   const TagalongSprXY *sprd = kTagalongDraw_SprXY + frame + (kTagalongDraw_Offs[follower_indicator] >> 3);
   const TagalongDmaFlags *sprf = kTagalongDmaAndFlags + frame;
 
-  if (follower_indicator != 12 && follower_indicator != 13) {
+  if (follower_indicator != follower_indicator_PurpleChess && follower_indicator != follower_indicator_BigBomb) {
     SetOam_Follower(oam, scrollx + sprd->x1, scrolly + sprd->y1, 0x20, 
                   (sprf->flags & 0xf0) | pal << 1 | (oam_priority_value >> 8), 2);
     oam++;
@@ -698,8 +697,8 @@ bool Follower_CheckForTrigger(const TagalongMessageInfo *info) {  // 89ac26
 }
 
 void Follower_Disable() {  // 89acf3
-  if (follower_indicator == 9 || follower_indicator == 10)
-    follower_indicator = 0;
+  if (follower_indicator == follower_indicator_LockSmith || follower_indicator == follower_indicator_Kiki)
+    follower_indicator = follower_indicator_noone;
 }
 
 void Blind_SpawnFromMaiden(uint16 x, uint16 y) {  // 9da03c
@@ -720,7 +719,7 @@ void Blind_SpawnFromMaiden(uint16 x, uint16 y) {  // 9da03c
 void Kiki_RevertToSprite(int k) {  // 9ee66b
   int j = Kiki_SpawnHandlerMonke(k);
   sprite_subtype2[j] = 1;
-  follower_indicator = 0;
+  follower_indicator = follower_indicator_noone;
 }
 
 int Kiki_SpawnHandlerMonke(int k) {  // 9ee67a
@@ -751,6 +750,6 @@ void Kiki_SpawnHandler_B(int k) {  // 9ee6d0
   sprite_z[j] = 1;
   sprite_z_vel[j] = 16;
   sprite_subtype2[j] = 3;
-  follower_indicator = 0;
+  follower_indicator = follower_indicator_noone;
 }
 

@@ -33,6 +33,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.InputDevice;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.PointerIcon;
 import android.view.Surface;
 import android.view.View;
@@ -49,6 +50,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dishii.zelda3.R;
 
 import java.util.Hashtable;
 import java.util.Locale;
@@ -1894,6 +1897,7 @@ class SDLMain implements Runnable {
         }  // else: Activity is already being destroyed
 
     }
+
 }
 
 /* This is a fake invisible editor view that receives the input and defines the

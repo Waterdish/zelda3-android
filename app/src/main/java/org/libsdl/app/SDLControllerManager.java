@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -14,6 +15,9 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
+
+import com.dishii.zelda3.R;
 
 
 public class SDLControllerManager
