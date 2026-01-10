@@ -4,19 +4,18 @@ A port of Zelda3 to Android. <br>
 Original Repository: https://github.com/snesrev/zelda3 <br>
 
 Use the instructions on the original repository (or below if you don't have access to a computer) to extract the zelda3_assets.dat file from your rom and put it in Android/data/com.dishii.zelda3/files <br>
-Running the app once will create the directory. <br>
+Running the app once will create the directory (the app shall crash on first launch, but the directory will be created). <br>
+For this version to work, make sure your zelda3.ini file entries match these https://github.com/yeticarus/zelda3-android/blob/main/app/src/main/assets/zelda3.ini <br>
 
 Android 13 users: check the releases tab for the Android 13 version of the app. 
 
-NOTE: Controller only. No touch controls yet. <br>
 
 How to Change Settings: <br>
-Android/data/com.dishii.zelda3/files contains zelda3.ini. Use a text editor to change options. <br>
+Android/data/com.dishii.zelda3/files contains zelda3.ini. Use a text editor to change options within this file. <br>
 
 Default Settings:
-L3 Turbo button <br>
-18:9 Aspect Ratio <br>
-Fullscreen(no android on-screen controls) <br>
+This branch supports both touch screen controls and bluetooth controllers. <br>
+By default, the ini file is set for screen touch control. Screen buttons will apear at first touch. For using a controller, see the appropriate lines in the ini file. <br>
 
 <h3>Instructions for creating zelda3_assets.dat on android:</h3>
 1. Download PyDroid: https://play.google.com/store/apps/details?id=ru.iiec.pydroid3&hl=en_US. Choose to skip any options that ask for money, you can do all of the following steps without paying.<br>
@@ -30,4 +29,4 @@ Fullscreen(no android on-screen controls) <br>
 9. Navigate to where you placed the rom file. (If you are unfamiliar with terminal commands, "ls" lists the folders and files and "cd Foldername" changes the directory. An example using the 0.3 release of zelda3 above would be "cd Download" "cd zelda3-0.3" "cd zelda3-0.3" or simply "cd Download/zelda3-0.3/zelda3-0.3") <br> 
 10. Paste in this command <code>python3 assets/restool.py --extract-from-rom</code> <br>
 11. It should pause for a while and when it finishes you should be able to see zelda3_assets.dat in the same folder as your rom. You can go ahead and copy that to the Android/data/com.dishii.zelda3/files location. <br>
-
+12. Copy https://github.com/yeticarus/zelda3-android/blob/main/app/src/main/assets/zelda3.ini to Android/data/com.dishii.zelda3/files. Feel free to edit it to tweek options.
